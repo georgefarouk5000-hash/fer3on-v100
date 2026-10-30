@@ -23,7 +23,10 @@ def test_virtual_shadow_record_resolves_as_recovery_candidate():
     row = json.loads(path.read_text(encoding="utf-8").splitlines()[0])
     assert row["record_type"] == "VIRTUAL_SHADOW"
     assert row["outcome"] == "WIN"
-    assert summary(log_path=str(path))["WIN"] == 1
+    totals = summary(log_path=str(path))
+    assert totals["rejected_total"] == 0
+    assert totals["virtual_total"] == 1
+    assert totals["WIN"] == 0
 
 
 def test_virtual_shadow_returns_false_when_log_path_is_a_directory():

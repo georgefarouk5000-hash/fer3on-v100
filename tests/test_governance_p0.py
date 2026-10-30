@@ -1,4 +1,3 @@
-import os
 import unittest
 
 import core.settings as settings
@@ -44,7 +43,8 @@ class GovernanceP0Tests(unittest.TestCase):
         resolved = resolve_data_source("truth_layer")
         self.assertIsNotNone(resolved)
         self.assertIn("truth_layer", resolved["canonical_key"])
-        self.assertTrue(os.path.exists(resolved["path"]))
+        self.assertEqual(resolved["path"], "data/truth_layer/trade_history.json")
+        self.assertEqual(resolved["category"], "canonical")
 
 
 if __name__ == "__main__":

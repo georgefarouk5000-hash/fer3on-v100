@@ -52,9 +52,14 @@ def test_realized_exposure_blocks_second_trade_on_small_account():
         entry_price=2650.0, sl=2640.0, tp=2670.0,
     )
 
-    decision = pra.evaluate_risk(
-        strategy="SMC", direction="BUY", requested_risk_percent=0.5,
-    )
+    with patch.object(
+        pra,
+        "get_daily_loss_status",
+        return_value={"daily_pnl": 0.0, "daily_loss": 0.0},
+    ):
+        decision = pra.evaluate_risk(
+            strategy="SMC", direction="BUY", requested_risk_percent=0.5,
+        )
 
     assert not decision.approved
     assert decision.rejection_reason == "EXPOSURE_LIMIT_HIT"

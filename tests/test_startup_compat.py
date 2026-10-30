@@ -3,6 +3,7 @@ import os
 import sys
 import types
 import unittest
+from unittest.mock import patch
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, ROOT)
@@ -26,7 +27,11 @@ from core.startup_check import run_startup_check
 
 class StartupCompatibilityTests(unittest.TestCase):
     def test_startup_check_exposes_required_runtime_functions(self):
-        summary = run_startup_check(strict=False)
+        with patch(
+            "core.startup_check._check_env_file",
+            return_value={"ok": True, "message": "test configuration"},
+        ):
+            summary = run_startup_check(strict=False)
         critical = summary.get("critical_functions", {})
 
         self.assertEqual(summary.get("system_status"), "SYSTEM_READY")

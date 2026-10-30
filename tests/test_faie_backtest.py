@@ -1,4 +1,6 @@
-import os
+import csv
+import tempfile
+from pathlib import Path
 import unittest
 
 from testing.faie_backtest import (
@@ -128,25 +130,22 @@ class TestRunFaieBacktest(unittest.TestCase):
         ):
             self.assertIn(key, d)
 
-    def test_default_csv_path_loads_real_history_file(self):
-        # Integration smoke test against real repo data — proves the
-        # csv_path/read_csv_records wiring works end-to-end, not just with
-        # hand-built row dicts.
-        #
-        # data/history/trades.csv itself was intentionally reset to empty on
-        # 2026-07-23 (see core/mt5_history_sync.py's close-logging fix and
-        # data/history/archive/) -- it only had pre-fix rows with permanently
-        # zeroed quality_score/rr_ratio/brain_score, which aren't meaningful
-        # to backtest against. The archived pre-fix file is still a real,
-        # on-disk CSV of the same shape, so it still exercises the same
-        # wiring this test cares about.
-        archived_path = os.path.join(
-            os.path.dirname(__file__), "..",
-            "data", "history", "archive", "trades_pre_sync_fix_2026-07-23.csv",
-        )
-        report = run_faie_backtest(csv_path=archived_path)
-        self.assertGreater(report.total_rows, 0)
-        self.assertIn(report.status, ("OK", "INSUFFICIENT_DATA", "NO_DATA"))
+    def test_csv_path_loads_fixture_history_file(self):
+        # Use a temporary fixture rather than personal trading history, which
+        # is intentionally excluded from the public repository.
+        with tempfile.TemporaryDirectory() as temp_dir:
+            csv_path = Path(temp_dir) / "trades.csv"
+            row = _row()
+            with csv_path.open("w", newline="", encoding="utf-8") as file:
+                writer = csv.DictWriter(file, fieldnames=row.keys())
+                writer.writeheader()
+                writer.writerow(row)
+
+            report = run_faie_backtest(csv_path=str(csv_path))
+
+        self.assertEqual(report.total_rows, 1)
+        self.assertEqual(report.evaluated_rows, 1)
+        self.assertEqual(report.status, "INSUFFICIENT_DATA")
 
 
 if __name__ == "__main__":

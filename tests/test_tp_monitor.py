@@ -45,7 +45,10 @@ class TestTpMonitor(unittest.TestCase):
         fake_mt5.positions_get.return_value = [fake_position]
         fake_mt5.order_send.return_value = MagicMock(retcode=fake_mt5.TRADE_RETCODE_DONE)
 
-        with patch('execution.tp_monitor.mt5', fake_mt5), patch('execution.tp_monitor.MT5_AVAILABLE', True):
+        with patch('execution.tp_monitor.mt5', fake_mt5), patch('execution.tp_monitor.MT5_AVAILABLE', True), patch(
+            'execution.tp_monitor.demo_execution_status',
+            return_value=(True, 'VERIFIED_DEMO'),
+        ):
             multi_tp.register_tp_ladder(123, {
                 'enabled': True,
                 'levels': [
@@ -82,7 +85,10 @@ class TestTpMonitor(unittest.TestCase):
         fake_mt5.positions_get.return_value = [fake_position]
         fake_mt5.order_send.return_value = MagicMock(retcode=fake_mt5.TRADE_RETCODE_DONE)
 
-        with patch('execution.tp_monitor.mt5', fake_mt5), patch('execution.tp_monitor.MT5_AVAILABLE', True):
+        with patch('execution.tp_monitor.mt5', fake_mt5), patch('execution.tp_monitor.MT5_AVAILABLE', True), patch(
+            'execution.tp_monitor.demo_execution_status',
+            return_value=(True, 'VERIFIED_DEMO'),
+        ):
             process_tp_ladders('EURUSD')
 
             restored = multi_tp.get_registered_ladder(789)
@@ -117,7 +123,10 @@ class TestTpMonitor(unittest.TestCase):
         fake_mt5.positions_get.return_value = [fake_position]
         fake_mt5.order_send.return_value = MagicMock(retcode=fake_mt5.TRADE_RETCODE_DONE)
 
-        with patch('execution.tp_monitor.mt5', fake_mt5), patch('execution.tp_monitor.MT5_AVAILABLE', True):
+        with patch('execution.tp_monitor.mt5', fake_mt5), patch('execution.tp_monitor.MT5_AVAILABLE', True), patch(
+            'execution.tp_monitor.demo_execution_status',
+            return_value=(True, 'VERIFIED_DEMO'),
+        ):
             multi_tp.register_tp_ladder(456, {
                 'enabled': True,
                 'levels': [{'label': 'TP1', 'price': 2010.0, 'close_pct': 0.5}],
@@ -149,7 +158,10 @@ class TestTpMonitor(unittest.TestCase):
         fake_mt5.positions_get.return_value = [fake_position]
         fake_mt5.order_send.return_value = MagicMock(retcode=fake_mt5.TRADE_RETCODE_DONE)
 
-        with patch('execution.tp_monitor.mt5', fake_mt5), patch('execution.tp_monitor.MT5_AVAILABLE', True):
+        with patch('execution.tp_monitor.mt5', fake_mt5), patch('execution.tp_monitor.MT5_AVAILABLE', True), patch(
+            'execution.tp_monitor.demo_execution_status',
+            return_value=(True, 'VERIFIED_DEMO'),
+        ):
             multi_tp.register_tp_ladder(321, {
                 'enabled': True,
                 'levels': [
