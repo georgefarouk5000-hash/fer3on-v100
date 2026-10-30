@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "category": "price_action",
+  "patterns": [
+    {
+      "id": "bullish_engulfing",
+      "name": "Bullish Engulfing",
+      "name_ar": "ابتلاعية صاعدة",
+      "bias": "bullish",
+      "description": "A bullish candle whose body fully covers the prior bearish candle's body.",
+      "conditions": ["current candle body engulfs previous candle body", "current candle closes higher than it opened"],
+      "invalidation": "next candle closes below the engulfing candle's low",
+      "confluence_boost": ["at tested support", "at discount zone", "after liquidity sweep"]
+    },
+    {
+      "id": "bearish_engulfing",
+      "name": "Bearish Engulfing",
+      "name_ar": "ابتلاعية هابطة",
+      "bias": "bearish",
+      "description": "A bearish candle whose body fully covers the prior bullish candle's body.",
+      "conditions": ["current candle body engulfs previous candle body", "current candle closes lower than it opened"],
+      "invalidation": "next candle closes above the engulfing candle's high",
+      "confluence_boost": ["at tested resistance", "at premium zone", "after liquidity sweep"]
+    },
+    {
+      "id": "pin_bar_bullish",
+      "name": "Bullish Pin Bar / Hammer",
+      "name_ar": "بار الدبوس الصاعد / المطرقة",
+      "bias": "bullish",
+      "description": "Small body with a long lower wick, showing strong rejection of lower prices.",
+      "conditions": ["lower wick at least 2x the body size", "small upper wick", "forms at or near a support level"],
+      "invalidation": "close below the pin bar's low",
+      "confluence_boost": ["at tested support", "after liquidity sweep of a swing low"]
+    },
+    {
+      "id": "pin_bar_bearish",
+      "name": "Bearish Pin Bar / Shooting Star",
+      "name_ar": "بار الدبوس الهابط / الشهاب",
+      "bias": "bearish",
+      "description": "Small body with a long upper wick, showing strong rejection of higher prices.",
+      "conditions": ["upper wick at least 2x the body size", "small lower wick", "forms at or near a resistance level"],
+      "invalidation": "close above the pin bar's high",
+      "confluence_boost": ["at tested resistance", "after liquidity sweep of a swing high"]
+    },
+    {
+      "id": "double_bottom",
+      "name": "Double Bottom",
+      "name_ar": "قاع مزدوج",
+      "bias": "bullish",
+      "description": "Two swing lows at a similar level with a pullback between them, suggesting selling exhaustion.",
+      "conditions": ["two lows within a small tolerance of each other", "clear pullback (neckline) between the two lows"],
+      "invalidation": "close below the second low",
+      "confluence_boost": ["neckline break confirms pattern", "aligns with higher-timeframe support"]
+    },
+    {
+      "id": "double_top",
+      "name": "Double Top",
+      "name_ar": "قمة مزدوجة",
+      "bias": "bearish",
+      "description": "Two swing highs at a similar level with a pullback between them, suggesting buying exhaustion.",
+      "conditions": ["two highs within a small tolerance of each other", "clear pullback (neckline) between the two highs"],
+      "invalidation": "close above the second high",
+      "confluence_boost": ["neckline break confirms pattern", "aligns with higher-timeframe resistance"]
+    },
+    {
+      "id": "breakout_retest_bullish",
+      "name": "Bullish Breakout & Retest",
+      "name_ar": "اختراق وإعادة اختبار صاعد",
+      "bias": "bullish",
+      "description": "Price closes decisively above resistance, then returns to retest it as new support before continuing higher.",
+      "conditions": ["decisive close above resistance", "pullback to the broken level", "rejection candle at the retest"],
+      "invalidation": "close back below the retested level with continuation lower",
+      "confluence_boost": ["high volume on breakout", "aligns with bullish order block"]
+    },
+    {
+      "id": "breakout_retest_bearish",
+      "name": "Bearish Breakout & Retest",
+      "name_ar": "اختراق وإعادة اختبار هابط",
+      "bias": "bearish",
+      "description": "Price closes decisively below support, then returns to retest it as new resistance before continuing lower.",
+      "conditions": ["decisive close below support", "pullback to the broken level", "rejection candle at the retest"],
+      "invalidation": "close back above the retested level with continuation higher",
+      "confluence_boost": ["high volume on breakout", "aligns with bearish order block"]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+<svg viewBox="0 0 800 380" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <rect width="800" height="380" fill="#0f1420"/>
+  <text x="400" y="35" fill="#e8ecf1" font-size="20" font-weight="bold" text-anchor="middle">Fair Value Gap (FVG)</text>
+
+  <!-- Candle 1 -->
+  <line x1="300" y1="150" x2="300" y2="230" stroke="#4ecb71" stroke-width="2"/>
+  <rect x="288" y="160" width="24" height="55" fill="#4ecb71"/>
+  <text x="300" y="255" fill="#8a93a6" font-size="13" text-anchor="middle">Candle 1</text>
+
+  <!-- Candle 2 (impulsive, large) -->
+  <line x1="400" y1="90" x2="400" y2="230" stroke="#4ecb71" stroke-width="2"/>
+  <rect x="388" y="100" width="24" height="115" fill="#4ecb71"/>
+  <text x="400" y="255" fill="#8a93a6" font-size="13" text-anchor="middle">Candle 2</text>
+
+  <!-- Candle 3 -->
+  <line x1="500" y1="70" x2="500" y2="150" stroke="#4ecb71" stroke-width="2"/>
+  <rect x="488" y="75" width="24" height="55" fill="#4ecb71"/>
+  <text x="500" y="255" fill="#8a93a6" font-size="13" text-anchor="middle">Candle 3</text>
+
+  <!-- The gap zone between candle1 high (215->160 top of body ~160) and candle3 low (130) -->
+  <rect x="310" y="150" width="180" height="10" fill="none"/>
+  <rect x="288" y="160" width="236" height="0" />
+  <!-- highlight gap region: from candle1 top wick(150) down to candle3 bottom(150)... simplified visually -->
+  <rect x="300" y="150" width="200" height="0" stroke="none"/>
+  <rect x="288" y="150" width="236" height="0" />
+  <rect x="300" y="150" width="200" height="0" fill="none"/>
+
+  <rect x="300" y="150" width="200" height="0"/>
+  <rect x="288" y="150" width="236" height="10" fill="#ffd166" opacity="0.25"/>
+  <rect x="288" y="130" width="236" height="20" fill="#ffd166" opacity="0.35" stroke="#ffd166" stroke-width="1.5" stroke-dasharray="5,3"/>
+
+  <text x="406" y="118" fill="#ffd166" font-size="13" text-anchor="middle">Imbalance / FVG</text>
+  <text x="406" y="300" fill="#8a93a6" font-size="12" text-anchor="middle" width="300">Gap between Candle 1's high and Candle 3's low</text>
+  <text x="406" y="320" fill="#8a93a6" font-size="12" text-anchor="middle">often revisited before the move continues</text>
+
+  <text x="400" y="360" fill="#5b6478" font-size="12" text-anchor="middle">Original illustrative diagram — educational purposes only</text>
+</svg>

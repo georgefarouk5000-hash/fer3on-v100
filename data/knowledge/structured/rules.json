@@ -1,0 +1,404 @@
+[
+  {
+    "id": "legacy_001",
+    "category": "smc",
+    "type": "regime_session",
+    "conditions": [
+      "TRENDING",
+      "LONDON"
+    ],
+    "advice": "FAVOR CONTINUATION SETUPS ALIGNED WITH STRUCTURE",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_002",
+    "category": "smc",
+    "type": "regime_session",
+    "conditions": [
+      "TRENDING",
+      "NEWYORK"
+    ],
+    "advice": "FAVOR ORDER BLOCK ENTRIES IN TREND DIRECTION",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_003",
+    "category": "smc",
+    "type": "regime_session",
+    "conditions": [
+      "VOLATILE",
+      "LONDON"
+    ],
+    "advice": "EXPECT LIQUIDITY SWEEPS BEFORE REAL MOVE",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_004",
+    "category": "smc",
+    "type": "regime_session",
+    "conditions": [
+      "RANGING",
+      "ASIA"
+    ],
+    "advice": "TREAT ASIA HIGH LOW AS LIQUIDITY POOLS NOT TARGETS",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_005",
+    "category": "smc",
+    "type": "partial_context",
+    "conditions": [
+      "LONDON",
+      "NEWYORK OVERLAP"
+    ],
+    "advice": "HIGHEST QUALITY WINDOW FOR CHOCH CONFIRMATION",
+    "weight": 0.06,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_006",
+    "category": "smc",
+    "type": "regime_session",
+    "conditions": [
+      "VOLATILE",
+      "NEWYORK"
+    ],
+    "advice": "WIDEN INVALIDATION BEYOND NORMAL ORDER BLOCK RANGE",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_007",
+    "category": "smc",
+    "type": "regime_session",
+    "conditions": [
+      "RANGING",
+      "LONDON"
+    ],
+    "advice": "WATCH FOR INDUCEMENT BEFORE REAL BREAKOUT",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_008",
+    "category": "price_action",
+    "type": "regime_session",
+    "conditions": [
+      "TRENDING",
+      "LONDON"
+    ],
+    "advice": "PREFER BREAKOUT RETEST OVER CHASING BREAKOUT CANDLE",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_009",
+    "category": "price_action",
+    "type": "regime_session",
+    "conditions": [
+      "RANGING",
+      "ASIA"
+    ],
+    "advice": "PREFER REJECTION CANDLES AT RANGE EXTREMES",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_010",
+    "category": "price_action",
+    "type": "regime_session",
+    "conditions": [
+      "VOLATILE",
+      "NEWYORK"
+    ],
+    "advice": "REQUIRE STRONGER CONFIRMATION CANDLE BEFORE ENTRY",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_011",
+    "category": "price_action",
+    "type": "regime_session",
+    "conditions": [
+      "TRENDING",
+      "NEWYORK"
+    ],
+    "advice": "TRENDLINE RETEST ENTRIES FAVORED OVER COUNTERTREND FADES",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_012",
+    "category": "price_action",
+    "type": "regime_session",
+    "conditions": [
+      "RANGING",
+      "LONDON"
+    ],
+    "advice": "DOUBLE TOP DOUBLE BOTTOM SETUPS MORE RELEVANT",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_013",
+    "category": "price_action",
+    "type": "regime_session",
+    "conditions": [
+      "VOLATILE",
+      "ASIA"
+    ],
+    "advice": "FALSE BREAKOUT RISK ELEVATED REDUCE CONFIDENCE",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_014",
+    "category": "risk_management",
+    "type": "regime_session",
+    "conditions": [
+      "VOLATILE",
+      "NEWYORK"
+    ],
+    "advice": "REDUCE POSITION SIZE AROUND HIGH IMPACT NEWS WINDOW",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_015",
+    "category": "risk_management",
+    "type": "regime_session",
+    "conditions": [
+      "VOLATILE",
+      "ASIA"
+    ],
+    "advice": "LOWER CONVICTION THIN LIQUIDITY WIDER SPREAD RISK",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_016",
+    "category": "risk_management",
+    "type": "regime_session",
+    "conditions": [
+      "TRENDING",
+      "LONDON"
+    ],
+    "advice": "ALLOW STANDARD RISK PER FIXED FRACTIONAL RULE",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_017",
+    "category": "risk_management",
+    "type": "regime_session",
+    "conditions": [
+      "RANGING",
+      "NEWYORK"
+    ],
+    "advice": "AVOID CHASING KEEP RISK AT OR BELOW STANDARD",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_018",
+    "category": "risk_management",
+    "type": "partial_context",
+    "conditions": [
+      "LONDON",
+      "NEWYORK OVERLAP"
+    ],
+    "advice": "BEST LIQUIDITY LOWER SLIPPAGE RISK",
+    "weight": 0.06,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_019",
+    "category": "gold_xauusd",
+    "type": "regime_session",
+    "conditions": [
+      "TRENDING",
+      "LONDON"
+    ],
+    "advice": "STRONG BUY ENVIRONMENT",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_020",
+    "category": "gold_xauusd",
+    "type": "regime_session",
+    "conditions": [
+      "TRENDING",
+      "NEWYORK"
+    ],
+    "advice": "STRONG TREND CONTINUATION",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_021",
+    "category": "gold_xauusd",
+    "type": "regime_session",
+    "conditions": [
+      "VOLATILE",
+      "ASIA"
+    ],
+    "advice": "REDUCE RISK",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_022",
+    "category": "gold_xauusd",
+    "type": "regime_session",
+    "conditions": [
+      "VOLATILE",
+      "LONDON"
+    ],
+    "advice": "WATCH BREAKOUTS",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_023",
+    "category": "gold_xauusd",
+    "type": "regime_session",
+    "conditions": [
+      "RANGING",
+      "ASIA"
+    ],
+    "advice": "RANGE TRADING",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_024",
+    "category": "gold_xauusd",
+    "type": "regime_session",
+    "conditions": [
+      "RANGING",
+      "NEWYORK"
+    ],
+    "advice": "AVOID CHASING",
+    "weight": 0.14,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_025",
+    "category": "gold_xauusd",
+    "type": "partial_context",
+    "conditions": [
+      "LONDON",
+      "NEWYORK OVERLAP"
+    ],
+    "advice": "BEST LIQUIDITY",
+    "weight": 0.06,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_026",
+    "category": "gold_xauusd",
+    "type": "partial_context",
+    "conditions": [
+      "HIGH ATR",
+      "VOLATILE"
+    ],
+    "advice": "REDUCE POSITION SIZE",
+    "weight": 0.06,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_027",
+    "category": "gold_xauusd",
+    "type": "partial_context",
+    "conditions": [
+      "LOW ATR",
+      "TRENDING"
+    ],
+    "advice": "ALLOW FULL RISK",
+    "weight": 0.06,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "legacy_028",
+    "category": "gold_xauusd",
+    "type": "correlation",
+    "conditions": [
+      "DXY DOWN",
+      "GOLD BUY"
+    ],
+    "advice": "HIGH PROBABILITY",
+    "weight": 0.08,
+    "validated_win_rate": null,
+    "source": "legacy_txt_migration"
+  },
+  {
+    "id": "classical_001",
+    "category": "classical_ta",
+    "type": "regime_session",
+    "conditions": [
+      "TRENDING",
+      "LONDON"
+    ],
+    "advice": "GOLDEN/DEATH CROSS CONFIRMATION MORE RELIABLE HERE (LAGGING INDICATOR ALIGNS WITH ESTABLISHED PRIMARY TREND)",
+    "weight": 0.1,
+    "validated_win_rate": null,
+    "source": "original"
+  },
+  {
+    "id": "classical_002",
+    "category": "classical_ta",
+    "type": "regime_session",
+    "conditions": [
+      "RANGING",
+      "ASIA"
+    ],
+    "advice": "MA CROSSOVERS AND RSI EXTREMES LESS RELIABLE HERE — PREFER RANGE-BOUND OSCILLATOR SIGNALS OVER TREND-FOLLOWING TOOLS",
+    "weight": 0.1,
+    "validated_win_rate": null,
+    "source": "original"
+  },
+  {
+    "id": "classical_003",
+    "category": "classical_ta",
+    "type": "partial_context",
+    "conditions": [
+      "VOLATILE"
+    ],
+    "advice": "CLASSICAL VOLUME-CLIMAX WARNING SIGNS (SHARP VOLUME SPIKE AT EXTREME) MORE MEANINGFUL — WATCH FOR EXHAUSTION REVERSALS",
+    "weight": 0.06,
+    "validated_win_rate": null,
+    "source": "original"
+  }
+]

@@ -1,0 +1,41 @@
+<svg viewBox="0 0 800 460" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <rect width="800" height="460" fill="#0f1420"/>
+  <text x="400" y="35" fill="#e8ecf1" font-size="20" font-weight="bold" text-anchor="middle">Fibonacci Retracement — Levels During a Pullback</text>
+
+  <!-- impulsive swing up -->
+  <path d="M 90 380 L 220 300 L 340 220 L 460 150"
+        stroke="#4ecb71" stroke-width="3" fill="none"/>
+  <circle cx="90" cy="380" r="4" fill="#4ecb71"/>
+  <circle cx="460" cy="150" r="4" fill="#4ecb71"/>
+  <text x="70" y="405" fill="#4ecb71" font-size="12">Swing Low (0%)</text>
+  <text x="420" y="130" fill="#4ecb71" font-size="12">Swing High (100%)</text>
+
+  <!-- retracement levels (horizontal dashed lines) -->
+  <g stroke-dasharray="6,4">
+    <line x1="460" y1="150" x2="740" y2="150" stroke="#8fa3c8" stroke-width="1.5"/>
+    <line x1="460" y1="200" x2="740" y2="200" stroke="#ffd166" stroke-width="1.5"/>
+    <line x1="460" y1="238" x2="740" y2="238" stroke="#ffd166" stroke-width="1.5"/>
+    <line x1="460" y1="265" x2="740" y2="265" stroke="#e07a5f" stroke-width="2"/>
+    <line x1="460" y1="292" x2="740" y2="292" stroke="#e07a5f" stroke-width="2"/>
+    <line x1="460" y1="335" x2="740" y2="335" stroke="#8fa3c8" stroke-width="1.5"/>
+    <line x1="460" y1="380" x2="740" y2="380" stroke="#4ecb71" stroke-width="1.5"/>
+  </g>
+  <text x="748" y="154" fill="#8fa3c8" font-size="12">0%</text>
+  <text x="748" y="204" fill="#ffd166" font-size="12">23.6%</text>
+  <text x="748" y="242" fill="#ffd166" font-size="12">38.2%</text>
+  <text x="748" y="269" fill="#e07a5f" font-size="12">50%</text>
+  <text x="748" y="296" fill="#e07a5f" font-size="12">61.8%</text>
+  <text x="748" y="339" fill="#8fa3c8" font-size="12">78.6%</text>
+  <text x="748" y="384" fill="#4ecb71" font-size="12">100%</text>
+
+  <!-- pullback path reacting near 61.8% then continuing -->
+  <path d="M 460 150 C 500 175, 540 250, 560 288 C 585 305, 610 260, 650 210 L 700 175"
+        stroke="#e8ecf1" stroke-width="2.5" fill="none" opacity="0.9"/>
+  <circle cx="560" cy="288" r="5" fill="#e07a5f"/>
+  <text x="500" y="320" fill="#e07a5f" font-size="12">تصحيح يتفاعل قرب 61.8%</text>
+  <text x="640" y="195" fill="#e8ecf1" font-size="12">استئناف الاتجاه الأصلي</text>
+
+  <text x="400" y="430" fill="#8fa3c8" font-size="11" text-anchor="middle">
+    مستوى فيبوناتشي بمفرده ضعيف الدلالة — قيمته الحقيقية عند تطابقه مع دعم/مقاومة سابق أو نمط شمعة آخر
+  </text>
+</svg>

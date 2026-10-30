@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Test / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Project runtime artifacts (generated at run time, not source)
+data/backups/
+data/faie/decisions/
+data/faie/shadow_log.jsonl
+data/fer3on_masr_demo_output.json
+data/backtests/*.json
+data/analytics/ci_shadow_backtest_baseline.json
+
+# Local env / secrets
+.env
+config.env
+*.local
+
+# Local Shadow runtime output
+logs/
+
+# Runtime data is account-specific or generated. Keep only the shared
+# strategy knowledge files under data/knowledge in source control.
+data/analytics/
+data/backtests/
+data/backups/
+data/dashboards/
+data/faie/
+data/feeds/
+data/history/
+data/logs/
+data/market_data/
+data/memory/
+data/models/
+data/truth_layer/
+data/*.csv
+data/*.json
+data/*.jsonl

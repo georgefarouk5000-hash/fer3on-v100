@@ -1,0 +1,55 @@
+name: Shadow Backtest Gate
+
+# التنفيذ: "تفعيل قوي لـ Shadow Backtest قبل كل رفع... إلزامية في CI قبل أي
+# merge". يشغّل مجموعة الاختبارات الكاملة (449 اختبار وقت كتابة هذا) ثم
+# بوابة الـ backtest الظلي (tools/ci_shadow_backtest_gate.py).
+#
+# ⚠️ مهم — اقرأ BACKTEST_VALIDITY_NOTICE.md: لا توجد بيانات OHLC حقيقية
+# مُرفقة في هذا المستودع بعد. طالما DATA_CSV_PATH أدناه غير موجود فعليًا،
+# هذه البوابة تعمل في وضع SMOKE TEST فقط (تتحقق أن الاستراتيجية لا تنهار)
+# وليس كبوابة Expectancy حقيقية — راجع تعليقات tools/ci_shadow_backtest_gate.py.
+# لتفعيل البوابة الحقيقية: أضف بيانات تاريخية حقيقية (آخر ~90 يومًا) تحت
+# المسار أدناه والتزم بها في المستودع (أو خزّنها كـ CI artifact/secret مصدر
+# بيانات)، ثم احذف السطر `continue-on-error` الخاص بخطوة الـ backtest.
+
+on:
+  pull_request:
+    branches: [main, master]
+  push:
+    branches: [main, master]
+
+env:
+  DATA_CSV_PATH: data/backtest_data/xauusd_last_90d.csv
+
+jobs:
+  test-and-shadow-backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run full test suite
+        run: python -m pytest tests/ -q
+
+      - name: Shadow backtest gate (real data if present, smoke test otherwise)
+        # See the notice above: without a committed real-data CSV, this
+        # step can only smoke-test (never silently gate merges on
+        # synthetic-data "expectancy" numbers — that would contradict
+        # BACKTEST_VALIDITY_NOTICE.md). Once real data exists at
+        # DATA_CSV_PATH, drop the `if` below so --csv is always used.
+        run: |
+          if [ -f "$DATA_CSV_PATH" ]; then
+            python tools/ci_shadow_backtest_gate.py --csv "$DATA_CSV_PATH" --max-regression-pct 5
+          else
+            echo "::warning::No real historical data at $DATA_CSV_PATH — running SMOKE TEST only (see BACKTEST_VALIDITY_NOTICE.md). This does NOT gate on expectancy."
+            python tools/ci_shadow_backtest_gate.py --bars 2000
+          fi

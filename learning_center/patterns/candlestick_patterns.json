@@ -1,0 +1,271 @@
+{
+  "schema_version": "1.0",
+  "category": "candlestick",
+  "note": "كل نمط هنا مطبَّق فعليًا (وليس وصفًا نظريًا فقط) في fer3on_masr/intelligence/candles.py — كل id هنا يقابل label يُحسب حقيقةً كل دورة تشغيل.",
+  "patterns": [
+    {
+      "id": "doji",
+      "name": "Doji",
+      "name_ar": "دوجي",
+      "bias": "neutral",
+      "candles_required": 1,
+      "description": "Open and close are nearly equal, signaling indecision between buyers and sellers.",
+      "conditions": ["body is a very small fraction of the candle's full range"],
+      "invalidation": "next candle continues strongly in either direction with no follow-through pause",
+      "confluence_boost": ["after an extended trend", "at a tested support/resistance level"]
+    },
+    {
+      "id": "dragonfly_doji",
+      "name": "Dragonfly Doji",
+      "name_ar": "دوجي اليعسوب",
+      "bias": "bullish",
+      "candles_required": 1,
+      "description": "Doji with a long lower wick and virtually no upper wick, showing rejection of lower prices.",
+      "conditions": ["doji-sized body", "lower wick dominates over upper wick"],
+      "invalidation": "close below the dragonfly's low",
+      "confluence_boost": ["at tested support", "after a liquidity sweep of a swing low"]
+    },
+    {
+      "id": "gravestone_doji",
+      "name": "Gravestone Doji",
+      "name_ar": "دوجي شاهد القبر",
+      "bias": "bearish",
+      "candles_required": 1,
+      "description": "Doji with a long upper wick and virtually no lower wick, showing rejection of higher prices.",
+      "conditions": ["doji-sized body", "upper wick dominates over lower wick"],
+      "invalidation": "close above the gravestone's high",
+      "confluence_boost": ["at tested resistance", "after a liquidity sweep of a swing high"]
+    },
+    {
+      "id": "hammer",
+      "name": "Hammer",
+      "name_ar": "المطرقة",
+      "bias": "bullish",
+      "candles_required": 1,
+      "description": "Small body near the top of the range with a long lower wick, appearing after a downtrend.",
+      "conditions": ["lower wick at least ~1.8x the body", "small upper wick", "preceding short-term trend is DOWN"],
+      "invalidation": "close below the hammer's low",
+      "confluence_boost": ["at tested support", "after liquidity sweep of a swing low"]
+    },
+    {
+      "id": "hanging_man",
+      "name": "Hanging Man",
+      "name_ar": "الرجل المشنوق",
+      "bias": "bearish",
+      "candles_required": 1,
+      "description": "Identical geometry to the Hammer, but appears after an uptrend — a warning sign rather than a bullish signal.",
+      "conditions": ["lower wick at least ~1.8x the body", "small upper wick", "preceding short-term trend is UP"],
+      "invalidation": "close above the hanging man's high with continuation",
+      "confluence_boost": ["at tested resistance", "after an extended rally"]
+    },
+    {
+      "id": "inverted_hammer",
+      "name": "Inverted Hammer",
+      "name_ar": "المطرقة المقلوبة",
+      "bias": "bullish",
+      "candles_required": 1,
+      "description": "Small body near the bottom of the range with a long upper wick, appearing after a downtrend.",
+      "conditions": ["upper wick at least ~1.8x the body", "small lower wick", "preceding short-term trend is DOWN"],
+      "invalidation": "close below the inverted hammer's low",
+      "confluence_boost": ["at tested support", "followed by a bullish confirmation candle"]
+    },
+    {
+      "id": "shooting_star",
+      "name": "Shooting Star",
+      "name_ar": "الشهاب",
+      "bias": "bearish",
+      "candles_required": 1,
+      "description": "Identical geometry to the Inverted Hammer, but appears after an uptrend, signaling rejection of higher prices.",
+      "conditions": ["upper wick at least ~1.8x the body", "small lower wick", "preceding short-term trend is UP"],
+      "invalidation": "close above the shooting star's high",
+      "confluence_boost": ["at tested resistance", "after a liquidity sweep of a swing high"]
+    },
+    {
+      "id": "bullish_marubozu",
+      "name": "Bullish Marubozu",
+      "name_ar": "ماروبوزو صاعدة",
+      "bias": "bullish",
+      "candles_required": 1,
+      "description": "A bullish candle with almost no wicks — the body occupies nearly the entire range, showing one-sided control by buyers.",
+      "conditions": ["body ratio >= ~0.85 of full range", "closes bullish", "both wicks minimal"],
+      "invalidation": "the following candle closes back below the marubozu's open",
+      "confluence_boost": ["on a breakout with high volume", "aligns with a higher-timeframe bullish bias"]
+    },
+    {
+      "id": "bearish_marubozu",
+      "name": "Bearish Marubozu",
+      "name_ar": "ماروبوزو هابطة",
+      "bias": "bearish",
+      "candles_required": 1,
+      "description": "A bearish candle with almost no wicks — the body occupies nearly the entire range, showing one-sided control by sellers.",
+      "conditions": ["body ratio >= ~0.85 of full range", "closes bearish", "both wicks minimal"],
+      "invalidation": "the following candle closes back above the marubozu's open",
+      "confluence_boost": ["on a breakdown with high volume", "aligns with a higher-timeframe bearish bias"]
+    },
+    {
+      "id": "spinning_top",
+      "name": "Spinning Top",
+      "name_ar": "الدوامة",
+      "bias": "neutral",
+      "candles_required": 1,
+      "description": "Small-to-moderate body with roughly balanced upper and lower wicks, showing hesitation rather than a strong directional signal alone.",
+      "conditions": ["body ratio roughly between 0.08 and 0.38 of range", "upper and lower wicks of comparable size"],
+      "invalidation": "not a standalone signal; needs directional confirmation from the next candle",
+      "confluence_boost": ["after an extended move, as an early hesitation cue"]
+    },
+    {
+      "id": "bullish_engulfing",
+      "name": "Bullish Engulfing",
+      "name_ar": "ابتلاعية صاعدة",
+      "bias": "bullish",
+      "candles_required": 2,
+      "description": "A bullish candle whose body fully covers the prior bearish candle's body.",
+      "conditions": ["previous candle bearish", "current candle bullish", "current body fully engulfs previous body"],
+      "invalidation": "next candle closes below the engulfing candle's low",
+      "confluence_boost": ["at tested support", "at a discount zone", "after a liquidity sweep"]
+    },
+    {
+      "id": "bearish_engulfing",
+      "name": "Bearish Engulfing",
+      "name_ar": "ابتلاعية هابطة",
+      "bias": "bearish",
+      "candles_required": 2,
+      "description": "A bearish candle whose body fully covers the prior bullish candle's body.",
+      "conditions": ["previous candle bullish", "current candle bearish", "current body fully engulfs previous body"],
+      "invalidation": "next candle closes above the engulfing candle's high",
+      "confluence_boost": ["at tested resistance", "at a premium zone", "after a liquidity sweep"]
+    },
+    {
+      "id": "bullish_harami",
+      "name": "Bullish Harami",
+      "name_ar": "الحمل الصاعد",
+      "bias": "bullish",
+      "candles_required": 2,
+      "description": "A small bullish candle contained entirely within the prior, larger bearish candle's body — a slowdown in bearish momentum.",
+      "conditions": ["previous candle bearish with a large body", "current candle bullish and contained within the previous body"],
+      "invalidation": "next candle makes a new low with continuation lower",
+      "confluence_boost": ["at tested support", "after an extended downtrend"]
+    },
+    {
+      "id": "bearish_harami",
+      "name": "Bearish Harami",
+      "name_ar": "الحمل الهابط",
+      "bias": "bearish",
+      "candles_required": 2,
+      "description": "A small bearish candle contained entirely within the prior, larger bullish candle's body — a slowdown in bullish momentum.",
+      "conditions": ["previous candle bullish with a large body", "current candle bearish and contained within the previous body"],
+      "invalidation": "next candle makes a new high with continuation higher",
+      "confluence_boost": ["at tested resistance", "after an extended uptrend"]
+    },
+    {
+      "id": "piercing_line",
+      "name": "Piercing Line",
+      "name_ar": "خط الاختراق",
+      "bias": "bullish",
+      "candles_required": 2,
+      "description": "A bullish candle opens below the prior bearish candle's low then closes above the midpoint of its body.",
+      "conditions": ["previous candle bearish", "current candle opens with a gap down then closes above the previous body's midpoint but below its open"],
+      "invalidation": "next candle closes below the piercing candle's low",
+      "confluence_boost": ["at tested support", "after a liquidity sweep of a swing low"]
+    },
+    {
+      "id": "dark_cloud_cover",
+      "name": "Dark Cloud Cover",
+      "name_ar": "غطاء السحابة الداكنة",
+      "bias": "bearish",
+      "candles_required": 2,
+      "description": "A bearish candle opens above the prior bullish candle's high then closes below the midpoint of its body.",
+      "conditions": ["previous candle bullish", "current candle opens with a gap up then closes below the previous body's midpoint but above its open"],
+      "invalidation": "next candle closes above the dark cloud candle's high",
+      "confluence_boost": ["at tested resistance", "after a liquidity sweep of a swing high"]
+    },
+    {
+      "id": "tweezer_top",
+      "name": "Tweezer Top",
+      "name_ar": "ملقط القمة",
+      "bias": "bearish",
+      "candles_required": 2,
+      "description": "Two consecutive candles with matching highs, the first bullish and the second bearish, showing repeated rejection at resistance.",
+      "conditions": ["two candles with highs within a small tolerance of each other", "first candle bullish, second bearish"],
+      "invalidation": "next candle closes above the shared high",
+      "confluence_boost": ["at tested resistance", "aligns with a higher-timeframe supply zone"]
+    },
+    {
+      "id": "tweezer_bottom",
+      "name": "Tweezer Bottom",
+      "name_ar": "ملقط القاع",
+      "bias": "bullish",
+      "candles_required": 2,
+      "description": "Two consecutive candles with matching lows, the first bearish and the second bullish, showing repeated rejection at support.",
+      "conditions": ["two candles with lows within a small tolerance of each other", "first candle bearish, second bullish"],
+      "invalidation": "next candle closes below the shared low",
+      "confluence_boost": ["at tested support", "aligns with a higher-timeframe demand zone"]
+    },
+    {
+      "id": "morning_star",
+      "name": "Morning Star",
+      "name_ar": "نجمة الصباح",
+      "bias": "bullish",
+      "candles_required": 3,
+      "description": "A large bearish candle, followed by a small-bodied 'star' candle, followed by a large bullish candle closing well into the first candle's body.",
+      "conditions": ["first candle bearish with a large body", "second candle has a small body (a pause)", "third candle bullish and closes above the first candle's midpoint"],
+      "invalidation": "close back below the star candle's low",
+      "confluence_boost": ["at tested support", "after an extended downtrend"]
+    },
+    {
+      "id": "evening_star",
+      "name": "Evening Star",
+      "name_ar": "نجمة المساء",
+      "bias": "bearish",
+      "candles_required": 3,
+      "description": "A large bullish candle, followed by a small-bodied 'star' candle, followed by a large bearish candle closing well into the first candle's body.",
+      "conditions": ["first candle bullish with a large body", "second candle has a small body (a pause)", "third candle bearish and closes below the first candle's midpoint"],
+      "invalidation": "close back above the star candle's high",
+      "confluence_boost": ["at tested resistance", "after an extended uptrend"]
+    },
+    {
+      "id": "three_white_soldiers",
+      "name": "Three White Soldiers",
+      "name_ar": "الجنود البيض الثلاثة",
+      "bias": "bullish",
+      "candles_required": 3,
+      "description": "Three consecutive bullish candles, each closing higher than the last, with reasonably large bodies and small wicks.",
+      "conditions": ["three consecutive bullish candles", "each closes above the previous close", "each has a body ratio >= ~0.45"],
+      "invalidation": "a strong bearish reversal candle erasing most of the third candle's gain",
+      "confluence_boost": ["breaking out of a range with rising participation"]
+    },
+    {
+      "id": "three_black_crows",
+      "name": "Three Black Crows",
+      "name_ar": "الغربان السود الثلاثة",
+      "bias": "bearish",
+      "candles_required": 3,
+      "description": "Three consecutive bearish candles, each closing lower than the last, with reasonably large bodies and small wicks.",
+      "conditions": ["three consecutive bearish candles", "each closes below the previous close", "each has a body ratio >= ~0.45"],
+      "invalidation": "a strong bullish reversal candle erasing most of the third candle's decline",
+      "confluence_boost": ["breaking down from a range with rising participation"]
+    },
+    {
+      "id": "three_inside_up",
+      "name": "Three Inside Up",
+      "name_ar": "الثلاثة الداخلية الصاعدة",
+      "bias": "bullish",
+      "candles_required": 3,
+      "description": "A Bullish Harami followed by a third candle that closes above the first candle's open, confirming the reversal.",
+      "conditions": ["first two candles form a Bullish Harami", "third candle bullish and closes above the first candle's open"],
+      "invalidation": "close back below the harami's low",
+      "confluence_boost": ["at tested support", "after an extended downtrend"]
+    },
+    {
+      "id": "three_inside_down",
+      "name": "Three Inside Down",
+      "name_ar": "الثلاثة الداخلية الهابطة",
+      "bias": "bearish",
+      "candles_required": 3,
+      "description": "A Bearish Harami followed by a third candle that closes below the first candle's open, confirming the reversal.",
+      "conditions": ["first two candles form a Bearish Harami", "third candle bearish and closes below the first candle's open"],
+      "invalidation": "close back above the harami's high",
+      "confluence_boost": ["at tested resistance", "after an extended uptrend"]
+    }
+  ]
+}

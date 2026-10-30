@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "category": "smc",
+  "patterns": [
+    {
+      "id": "bullish_order_block",
+      "name": "Bullish Order Block",
+      "name_ar": "كتلة أوامر صاعدة",
+      "bias": "bullish",
+      "description": "Last bearish candle before a strong impulsive rally; price often returns to mitigate this zone before continuing up.",
+      "conditions": ["last opposing candle before impulsive move", "followed by strong displacement candles", "unmitigated (not yet returned to)"],
+      "invalidation": "close fully through the block's low",
+      "confluence_boost": ["inside discount zone", "aligned with FVG", "aligned with higher-timeframe trend"]
+    },
+    {
+      "id": "bearish_order_block",
+      "name": "Bearish Order Block",
+      "name_ar": "كتلة أوامر هابطة",
+      "bias": "bearish",
+      "description": "Last bullish candle before a strong impulsive drop; price often returns to mitigate this zone before continuing down.",
+      "conditions": ["last opposing candle before impulsive move", "followed by strong displacement candles", "unmitigated (not yet returned to)"],
+      "invalidation": "close fully through the block's high",
+      "confluence_boost": ["inside premium zone", "aligned with FVG", "aligned with higher-timeframe trend"]
+    },
+    {
+      "id": "liquidity_sweep_bullish",
+      "name": "Bullish Liquidity Sweep",
+      "name_ar": "اصطياد سيولة صاعد",
+      "bias": "bullish",
+      "description": "Price briefly breaks below a swing low / equal lows (sell-side liquidity), then reverses sharply back inside the range.",
+      "conditions": ["brief penetration beyond prior swing low", "fast rejection candle back inside range", "ideally near a discount zone or unmitigated demand order block"],
+      "invalidation": "sustained close and continuation below the swept low",
+      "confluence_boost": ["CHoCH on lower timeframe follows", "aligned with bullish order block"]
+    },
+    {
+      "id": "liquidity_sweep_bearish",
+      "name": "Bearish Liquidity Sweep",
+      "name_ar": "اصطياد سيولة هابط",
+      "bias": "bearish",
+      "description": "Price briefly breaks above a swing high / equal highs (buy-side liquidity), then reverses sharply back inside the range.",
+      "conditions": ["brief penetration beyond prior swing high", "fast rejection candle back inside range", "ideally near a premium zone or unmitigated supply order block"],
+      "invalidation": "sustained close and continuation above the swept high",
+      "confluence_boost": ["CHoCH on lower timeframe follows", "aligned with bearish order block"]
+    },
+    {
+      "id": "bullish_fvg",
+      "name": "Bullish Fair Value Gap",
+      "name_ar": "فجوة قيمة عادلة صاعدة",
+      "bias": "bullish",
+      "description": "Three-candle imbalance during an up-move where candle 1 high and candle 3 low leave a gap; often partially filled before continuation.",
+      "conditions": ["candle 1 wick does not overlap candle 3 wick", "formed during impulsive up-move"],
+      "invalidation": "full close below the gap with continuation lower",
+      "confluence_boost": ["aligns with order block", "inside discount zone"]
+    },
+    {
+      "id": "bearish_fvg",
+      "name": "Bearish Fair Value Gap",
+      "name_ar": "فجوة قيمة عادلة هابطة",
+      "bias": "bearish",
+      "description": "Three-candle imbalance during a down-move; often partially filled before continuation lower.",
+      "conditions": ["candle 1 wick does not overlap candle 3 wick", "formed during impulsive down-move"],
+      "invalidation": "full close above the gap with continuation higher",
+      "confluence_boost": ["aligns with order block", "inside premium zone"]
+    },
+    {
+      "id": "choch_bullish",
+      "name": "Bullish Change of Character",
+      "name_ar": "تغيّر هيكل صاعد",
+      "bias": "bullish",
+      "description": "First break of structure against a prevailing downtrend (break of the most recent lower high) — early reversal warning, not confirmation.",
+      "conditions": ["prior LH/LL structure", "candle closes above most recent lower high"],
+      "invalidation": "price makes a new low without following through higher",
+      "confluence_boost": ["follows a liquidity sweep", "confirmed shortly after by a BOS higher"]
+    },
+    {
+      "id": "choch_bearish",
+      "name": "Bearish Change of Character",
+      "name_ar": "تغيّر هيكل هابط",
+      "bias": "bearish",
+      "description": "First break of structure against a prevailing uptrend (break of the most recent higher low) — early reversal warning, not confirmation.",
+      "conditions": ["prior HH/HL structure", "candle closes below most recent higher low"],
+      "invalidation": "price makes a new high without following through lower",
+      "confluence_boost": ["follows a liquidity sweep", "confirmed shortly after by a BOS lower"]
+    }
+  ]
+}

@@ -1,0 +1,697 @@
+[
+  {
+    "id": "afcf5ea4ec1f",
+    "path": "/home/user/work/FER3ON-MASR/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1391
+  },
+  {
+    "id": "729e28bbb083",
+    "path": "/home/user/work/FER3ON-MASR/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 2158
+  },
+  {
+    "id": "70488ff6cd41",
+    "path": "learning_center/books/01_smc_smart_money_concepts.md",
+    "category": "book",
+    "tags": [
+      "smc",
+      "order_block",
+      "liquidity",
+      "choch",
+      "bos",
+      "fvg"
+    ],
+    "size": 5877
+  },
+  {
+    "id": "0e195387d483",
+    "path": "learning_center/books/02_price_action_fundamentals.md",
+    "category": "book",
+    "tags": [
+      "price_action",
+      "candlestick",
+      "chart_patterns"
+    ],
+    "size": 5030
+  },
+  {
+    "id": "28013c265b67",
+    "path": "learning_center/books/03_gold_xauusd_trading_guide.md",
+    "category": "book",
+    "tags": [
+      "gold",
+      "xauusd",
+      "dxy",
+      "sessions",
+      "news"
+    ],
+    "size": 5314
+  },
+  {
+    "id": "62ab16980ea0",
+    "path": "learning_center/books/04_risk_management_guide.md",
+    "category": "book",
+    "tags": [
+      "risk_management",
+      "position_sizing",
+      "r_multiple"
+    ],
+    "size": 5033
+  },
+  {
+    "id": "69a3df46b190",
+    "path": "learning_center/books/05_trading_psychology_guide.md",
+    "category": "book",
+    "tags": [
+      "psychology",
+      "discipline",
+      "journaling"
+    ],
+    "size": 5441
+  },
+  {
+    "id": "d3e31d391953",
+    "path": "learning_center/notes/smc_cheatsheet_ar.md",
+    "category": "notes",
+    "tags": [
+      "smc",
+      "arabic",
+      "cheatsheet"
+    ],
+    "size": 1560
+  },
+  {
+    "id": "4805c0d4ee61",
+    "path": "learning_center/notes/price_action_cheatsheet_ar.md",
+    "category": "notes",
+    "tags": [
+      "price_action",
+      "arabic",
+      "cheatsheet"
+    ],
+    "size": 1306
+  },
+  {
+    "id": "6c9cd162b16f",
+    "path": "learning_center/notes/gold_xauusd_cheatsheet_ar.md",
+    "category": "notes",
+    "tags": [
+      "gold",
+      "xauusd",
+      "arabic",
+      "cheatsheet"
+    ],
+    "size": 1509
+  },
+  {
+    "id": "55bd46b44e43",
+    "path": "learning_center/notes/risk_management_cheatsheet_ar.md",
+    "category": "notes",
+    "tags": [
+      "risk_management",
+      "arabic",
+      "cheatsheet"
+    ],
+    "size": 1442
+  },
+  {
+    "id": "7ab16f401bbe",
+    "path": "learning_center/notes/psychology_cheatsheet_ar.md",
+    "category": "notes",
+    "tags": [
+      "psychology",
+      "arabic",
+      "cheatsheet"
+    ],
+    "size": 1365
+  },
+  {
+    "id": "e4a2fd242603",
+    "path": "learning_center/patterns/smc_patterns.json",
+    "category": "pattern",
+    "tags": [
+      "smc",
+      "patterns",
+      "structured"
+    ],
+    "size": 4963
+  },
+  {
+    "id": "c7eb158826a6",
+    "path": "learning_center/patterns/price_action_patterns.json",
+    "category": "pattern",
+    "tags": [
+      "price_action",
+      "patterns",
+      "structured"
+    ],
+    "size": 4567
+  },
+  {
+    "id": "d011bd51fc53",
+    "path": "learning_center/images/order_block_diagram.svg",
+    "category": "image",
+    "tags": [
+      "smc",
+      "diagram",
+      "order_block"
+    ],
+    "size": 2593
+  },
+  {
+    "id": "587b67f41165",
+    "path": "learning_center/images/liquidity_sweep_diagram.svg",
+    "category": "image",
+    "tags": [
+      "smc",
+      "diagram",
+      "liquidity"
+    ],
+    "size": 2242
+  },
+  {
+    "id": "edee8e74d63f",
+    "path": "learning_center/images/bos_choch_diagram.svg",
+    "category": "image",
+    "tags": [
+      "smc",
+      "diagram",
+      "structure"
+    ],
+    "size": 2387
+  },
+  {
+    "id": "ce3a1a920373",
+    "path": "learning_center/images/fvg_diagram.svg",
+    "category": "image",
+    "tags": [
+      "smc",
+      "diagram",
+      "fvg"
+    ],
+    "size": 2327
+  },
+  {
+    "id": "982ae2eabb5e",
+    "path": "learning_center/images/risk_reward_diagram.svg",
+    "category": "image",
+    "tags": [
+      "risk_management",
+      "diagram",
+      "r_multiple"
+    ],
+    "size": 2024
+  },
+  {
+    "id": "cceea6335374",
+    "path": "learning_center/research/gold_dxy_correlation_notes.md",
+    "category": "research",
+    "tags": [
+      "gold",
+      "dxy",
+      "research"
+    ],
+    "size": 2325
+  },
+  {
+    "id": "2a12a0fc5752",
+    "path": "learning_center/research/session_volatility_notes.md",
+    "category": "research",
+    "tags": [
+      "sessions",
+      "volatility",
+      "research"
+    ],
+    "size": 2131
+  },
+  {
+    "id": "a53415a0e1a0",
+    "path": "learning_center/strategies/smc_entry_checklist.md",
+    "category": "strategy",
+    "tags": [
+      "smc",
+      "checklist",
+      "strategy"
+    ],
+    "size": 2100
+  },
+  {
+    "id": "8d13014c3c49",
+    "path": "learning_center/strategies/price_action_reversal_checklist.md",
+    "category": "strategy",
+    "tags": [
+      "price_action",
+      "checklist",
+      "strategy"
+    ],
+    "size": 1956
+  },
+  {
+    "id": "e22e21ceb336",
+    "path": "data/knowledge/smc_rules.txt",
+    "category": "knowledge_rule",
+    "tags": [
+      "smc",
+      "knowledge_rule"
+    ],
+    "size": 470
+  },
+  {
+    "id": "01382176ee4a",
+    "path": "data/knowledge/price_action_rules.txt",
+    "category": "knowledge_rule",
+    "tags": [
+      "price_action",
+      "knowledge_rule"
+    ],
+    "size": 411
+  },
+  {
+    "id": "456b0f1044f0",
+    "path": "data/knowledge/risk_management_rules.txt",
+    "category": "knowledge_rule",
+    "tags": [
+      "risk_management",
+      "knowledge_rule"
+    ],
+    "size": 334
+  },
+  {
+    "id": "c56787ecdb07",
+    "path": "learning_center/books/06_classical_technical_analysis.md",
+    "category": "book",
+    "tags": [
+      "dow_theory",
+      "moving_averages",
+      "rsi",
+      "macd",
+      "volume",
+      "classical_ta"
+    ],
+    "size": 8009
+  },
+  {
+    "id": "71cf8c9b67a5",
+    "path": "learning_center/notes/classical_ta_cheatsheet_ar.md",
+    "category": "note",
+    "tags": [
+      "dow_theory",
+      "classical_ta",
+      "cheatsheet"
+    ],
+    "size": 1578
+  },
+  {
+    "id": "f89a1f928b16",
+    "path": "learning_center/images/dow_theory_three_trends.svg",
+    "category": "image",
+    "tags": [
+      "dow_theory",
+      "trend",
+      "diagram"
+    ],
+    "size": 1818
+  },
+  {
+    "id": "2b6ccc8f2eeb",
+    "path": "learning_center/images/moving_average_crossover.svg",
+    "category": "image",
+    "tags": [
+      "moving_average",
+      "golden_cross",
+      "diagram"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "0381e0ad5471",
+    "path": "learning_center/books/07_advanced_technical_indicators_and_patterns.md",
+    "category": "book",
+    "tags": [
+      "fibonacci",
+      "elliott_wave",
+      "bollinger_bands",
+      "adx",
+      "ichimoku",
+      "parabolic_sar",
+      "point_and_figure",
+      "classical_ta"
+    ],
+    "size": 11443
+  },
+  {
+    "id": "fc21a07ea130",
+    "path": "learning_center/notes/advanced_indicators_cheatsheet_ar.md",
+    "category": "notes",
+    "tags": [
+      "fibonacci",
+      "elliott_wave",
+      "arabic",
+      "cheatsheet"
+    ],
+    "size": 2480
+  },
+  {
+    "id": "5c9378703165",
+    "path": "learning_center/patterns/candlestick_patterns.json",
+    "category": "pattern",
+    "tags": [
+      "candlestick",
+      "patterns",
+      "structured"
+    ],
+    "size": 14650
+  },
+  {
+    "id": "dc5f3508ab9a",
+    "path": "learning_center/images/fibonacci_retracement_diagram.svg",
+    "category": "image",
+    "tags": [
+      "fibonacci",
+      "diagram",
+      "retracement"
+    ],
+    "size": 2583
+  },
+  {
+    "id": "bbb27a068e69",
+    "path": "learning_center/images/elliott_wave_structure_diagram.svg",
+    "category": "image",
+    "tags": [
+      "elliott_wave",
+      "diagram",
+      "structure"
+    ],
+    "size": 2145
+  },
+  {
+    "id": "d974d3156a0d",
+    "path": "/home/claude/work/FER3ON-MASR-updated/FER3ON-MASR-complete/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "f2425b3d6a9c",
+    "path": "/home/claude/work/FER3ON-MASR-updated/FER3ON-MASR-complete/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "34fd40a1f7a4",
+    "path": "/home/claude/project/FER3ON-MASR-complete/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "714a7b5e3fea",
+    "path": "/home/claude/project/FER3ON-MASR-complete/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "775e1ecbb804",
+    "path": "/home/user/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "1cafaaa2567e",
+    "path": "/home/user/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "884248e28898",
+    "path": "/home/claude/work/extracted/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "c79d027be438",
+    "path": "/home/claude/work/extracted/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "64184db8293d",
+    "path": "/home/claude/analysis/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "d55d2d437219",
+    "path": "/home/claude/analysis/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "c06507b81cfc",
+    "path": "/home/claude/project/FER3ON-MASR-FAIE-v1-improved-SLTP-FIXED/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "96547f365ec4",
+    "path": "/home/claude/project/FER3ON-MASR-FAIE-v1-improved-SLTP-FIXED/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "9339cece59a0",
+    "path": "/home/claude/review/new/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "08105c6dd1dc",
+    "path": "/home/claude/review/new/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "c2310a247d84",
+    "path": "/home/claude/v2/FER3ON-FINAL-build1-audited (7)/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "63ef265aa4f6",
+    "path": "/home/claude/v2/FER3ON-FINAL-build1-audited (7)/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "ad17b3a9f45b",
+    "path": "/home/claude/fer3on/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "5318dd5b381d",
+    "path": "/home/claude/fer3on/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "56aad3e82f12",
+    "path": "/home/claude/v2_rearch/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "81d3d3cac46a",
+    "path": "/home/claude/v2_rearch/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "6ca2ddbcb94a",
+    "path": "/home/claude/merged/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "a228a8dba536",
+    "path": "/home/claude/merged/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "0cd2aafd6a73",
+    "path": "/home/claude/audit/FER3ON-FINAL-build1-MERGED-rearch-cert6/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "5d4817a0ccd2",
+    "path": "/home/claude/audit/FER3ON-FINAL-build1-MERGED-rearch-cert6/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "6c52581e336d",
+    "path": "/home/user/fer3on/brain_v3/FER3ON-BRAIN-SCOPE-CONNECT-2026-08-20 (1)/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 1576
+  },
+  {
+    "id": "14669071d790",
+    "path": "/home/user/fer3on/brain_v3/FER3ON-BRAIN-SCOPE-CONNECT-2026-08-20 (1)/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "dd9ef6103815",
+    "path": "D:/FER3ON_PHASE4_5_COMPLETE/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 17617
+  },
+  {
+    "id": "598aa6c91dfd",
+    "path": "D:/FER3ON_PHASE4_5_COMPLETE/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  },
+  {
+    "id": "f038217550c9",
+    "path": "D:/project/data/masr_knowledge_graph.json",
+    "category": "knowledge_graph",
+    "tags": [
+      "masr",
+      "graph"
+    ],
+    "size": 18871
+  },
+  {
+    "id": "bad3ca9febe7",
+    "path": "D:/project/README_MASR.md",
+    "category": "docs",
+    "tags": [
+      "masr",
+      "roadmap"
+    ],
+    "size": 7030
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "psych_001",
+    "category": "psychology",
+    "type": "regime_session",
+    "conditions": ["VOLATILE", "NEWYORK"],
+    "advice": "تقلب عالٍ + جلسة نيويورك (غالبًا حول أخبار عالية التأثير) يرفعان احتمال قرارات اندفاعية (FOMO) ومطاردة السعر بعد فوات الفرصة. التزم بحجم الصفقة المخطط له مسبقًا ولا تُعدّله في اللحظة.",
+    "source": "original"
+  },
+  {
+    "id": "psych_002",
+    "category": "psychology",
+    "type": "regime_session",
+    "conditions": ["VOLATILE", "ASIA"],
+    "advice": "سيولة ضعيفة + تقلب غير معتاد لجلسة آسيا يجعل أي خسارة تبدو أكبر نفسيًا مما هي عليه فعليًا بسبب اتساع السبريد؛ احذر من 'صفقة الانتقام' لتعويض خسارة صغيرة انتفخت بسبب ظروف السيولة لا بسبب خطأ في التحليل.",
+    "source": "original"
+  },
+  {
+    "id": "psych_003",
+    "category": "psychology",
+    "type": "regime_session",
+    "conditions": ["RANGING", "ASIA"],
+    "advice": "الأسواق العرضية الهادئة (نطاق + آسيا) تولّد مللًا يدفع للدخول بلا سبب حقيقي (overtrading) لمجرد كسر الجمود؛ غياب الفرصة الواضحة قرار صحيح بحد ذاته وليس فرصة ضائعة.",
+    "source": "original"
+  },
+  {
+    "id": "psych_004",
+    "category": "psychology",
+    "type": "regime_session",
+    "conditions": ["TRENDING", "NEWYORK"],
+    "advice": "اتجاه قوي في جلسة نيويورك يغري بزيادة الحجم أو مضاعفة الصفقات بدافع 'الثقة الزائدة بعد الأرباح المتتالية'؛ الانضباط في إدارة رأس المال يجب أن يبقى ثابتًا بصرف النظر عن قوة الاتجاه الظاهرة.",
+    "source": "original"
+  },
+  {
+    "id": "psych_005",
+    "category": "psychology",
+    "type": "regime_session",
+    "conditions": ["LONDON", "NEWYORK OVERLAP"],
+    "advice": "نافذة تداخل لندن-نيويورك عالية السيولة والسرعة تُقلّص وقت اتخاذ القرار الفعلي؛ احذر اتخاذ قرارات الدخول/الخروج تحت ضغط السرعة بدل خطة مكتوبة مسبقًا.",
+    "source": "original"
+  },
+  {
+    "id": "psych_006",
+    "category": "psychology",
+    "type": "partial_context",
+    "conditions": ["VOLATILE"],
+    "advice": "التقلب المرتفع عمومًا (بصرف النظر عن الجلسة) يرفع الحمل الذهني ويُسرّع الإرهاق القراري (decision fatigue)؛ قلّص عدد الصفقات المتزامنة بدل زيادتها.",
+    "source": "original"
+  },
+  {
+    "id": "psych_007",
+    "category": "psychology",
+    "type": "partial_context",
+    "conditions": ["RANGING"],
+    "advice": "الأسواق العرضية تُغري بتجاهل وقف الخسارة على أمل 'عودة السعر للنطاق'؛ التزم بالخطة المحددة سلفًا لا بالأمل.",
+    "source": "original"
+  }
+]

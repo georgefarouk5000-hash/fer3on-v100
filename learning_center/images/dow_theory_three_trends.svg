@@ -1,0 +1,31 @@
+<svg viewBox="0 0 800 420" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <rect width="800" height="420" fill="#0f1420"/>
+  <text x="400" y="35" fill="#e8ecf1" font-size="20" font-weight="bold" text-anchor="middle">Dow Theory — Three Concurrent Trends</text>
+
+  <!-- Primary trend (broad rising channel) -->
+  <path d="M 60 340 L 200 300 L 340 250 L 480 190 L 620 140 L 740 100"
+        stroke="#4ecb71" stroke-width="3" fill="none" opacity="0.9"/>
+  <text x="600" y="90" fill="#4ecb71" font-size="13">Primary Trend (شهور-سنوات)</text>
+
+  <!-- Secondary trend (corrections against primary) -->
+  <path d="M 200 300 L 260 320 L 340 250"
+        stroke="#ffd166" stroke-width="2.5" fill="none" stroke-dasharray="5,3"/>
+  <path d="M 480 190 L 540 220 L 620 140"
+        stroke="#ffd166" stroke-width="2.5" fill="none" stroke-dasharray="5,3"/>
+  <text x="230" y="345" fill="#ffd166" font-size="12">Secondary Trend (أسابيع)</text>
+
+  <!-- Minor trend (daily noise) -->
+  <path d="M 340 250 C 360 245, 370 260, 380 253 S 400 240, 410 248 S 430 235, 440 242"
+        stroke="#8fa3c8" stroke-width="1.5" fill="none"/>
+  <text x="420" y="270" fill="#8fa3c8" font-size="11">Minor Trend (أيام)</text>
+
+  <!-- Volume confirmation bars -->
+  <g opacity="0.55">
+    <rect x="60" y="380" width="14" height="20" fill="#4ecb71"/>
+    <rect x="200" y="370" width="14" height="30" fill="#4ecb71"/>
+    <rect x="340" y="360" width="14" height="40" fill="#4ecb71"/>
+    <rect x="480" y="350" width="14" height="50" fill="#4ecb71"/>
+    <rect x="620" y="345" width="14" height="55" fill="#4ecb71"/>
+  </g>
+  <text x="400" y="405" fill="#8fa3c8" font-size="11" text-anchor="middle">الحجم يفترض أن يتوسع مع الاتجاه الأساسي (تأكيد كلاسيكي)</text>
+</svg>
