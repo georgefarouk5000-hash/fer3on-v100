@@ -12,6 +12,10 @@
 * Portfolio Brain
 * Unified Decision Layer
 
+خارطة التطوير المستقبلية، بما فيها التوسع متعدد الرموز وموجّه الاستراتيجيات
+وطريقة فرز المواد التعليمية، موثقة في
+[docs/FUTURE_DEVELOPMENT_ROADMAP_AR.md](docs/FUTURE_DEVELOPMENT_ROADMAP_AR.md).
+
 ---
 
 ## 🎯 بنية FER3ON-V100
