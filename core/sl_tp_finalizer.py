@@ -57,6 +57,24 @@ from core.settings import (
 )
 
 
+def is_structural_stop(stop_diagnostics: Any) -> bool:
+    """Return whether the selected stop must preserve a structural anchor."""
+    return (
+        isinstance(stop_diagnostics, dict)
+        and stop_diagnostics.get("selected_stop_source") == "structure"
+    )
+
+
+def is_structural_target(target_diagnostics: Any) -> bool:
+    """Return whether the selected target is a confirmed structure level."""
+    return (
+        isinstance(target_diagnostics, dict)
+        and str(target_diagnostics.get("selected_target_source") or "").endswith(
+            "_SWING"
+        )
+    )
+
+
 def finalize_sl_tp(
     symbol: str,
     sl_dist_raw: Optional[float],
@@ -70,6 +88,8 @@ def finalize_sl_tp(
     market_regime: Optional[str] = None,
     confidence: Any = 1.0,
     exposure_modifier: float = 1.0,
+    structural_stop: bool = False,
+    structural_target: bool = False,
 ) -> Dict[str, Any]:
     """Compute the final SL/TP distances (raw price units) that should
     actually be sent to the broker, plus a rescaled tp_tiers ladder for
@@ -111,8 +131,11 @@ def finalize_sl_tp(
 
     # STEP 1 — SL: apply the active strategy's context-aware cap before
     # broker enforcement.
+    preserve_structural_distance = bool(structural_stop)
     effective_sl_cap = float(MAX_SL_DISTANCE_DOLLARS)
-    if sl_dist_raw is not None and strategy:
+    if preserve_structural_distance:
+        sl_dist_for_enforcement = sl_dist_raw
+    elif sl_dist_raw is not None and strategy:
         from core.sl_risk_policy import resolve_sl_cap
         strategy_cap = resolve_sl_cap(
             strategy=strategy,
@@ -124,21 +147,34 @@ def finalize_sl_tp(
         sl_dist_for_enforcement = min(sl_dist_raw, effective_sl_cap)
     else:
         sl_dist_for_enforcement = sl_dist_raw
-    required_minimum = _required_min_stop_distance(symbol, point)
+    required_minimum = (
+        _required_min_stop_distance(symbol, point, structural_stop=True)
+        if structural_stop
+        else _required_min_stop_distance(symbol, point)
+    )
     stop_valid = sl_dist_raw is not None and sl_dist_raw > 0
     stop_reason = None if stop_valid else "INVALID_SL_DISTANCE"
     tp_valid = tp_dist_raw is not None and tp_dist_raw > 0
     if not tp_valid and stop_valid:
         stop_reason = "INVALID_TP_DISTANCE"
-    if required_minimum > effective_sl_cap:
+    if (
+        preserve_structural_distance
+        and stop_valid
+        and float(sl_dist_raw) < required_minimum
+    ):
+        stop_valid = False
+        stop_reason = "STRUCTURAL_STOP_BELOW_BROKER_MINIMUM"
+    if not preserve_structural_distance and required_minimum > effective_sl_cap:
         stop_valid = False
         stop_reason = "BROKER_MINIMUM_EXCEEDS_SL_CAP"
     sl_dist_final = _enforce_min_stop_distance(
         symbol,
         sl_dist_for_enforcement if sl_dist_for_enforcement is not None else 0.0,
         point,
+        structural_stop=structural_stop,
+        preserve_structural_distance=preserve_structural_distance,
     )
-    if sl_dist_final > effective_sl_cap:
+    if not preserve_structural_distance and sl_dist_final > effective_sl_cap:
         if stop_valid:
             stop_valid = False
             stop_reason = stop_reason or "FINAL_SL_EXCEEDS_POLICY_CAP"
@@ -153,7 +189,13 @@ def finalize_sl_tp(
 
     # STEP 3 — secondary ATR sanity ceiling (defense-in-depth only).
     tp_was_atr_capped = False
-    if atr is not None and float(atr) > 0 and strategy and tp_dist_final is not None:
+    if (
+        not structural_target
+        and atr is not None
+        and float(atr) > 0
+        and strategy
+        and tp_dist_final is not None
+    ):
         try:
             mult_atr = float(get_tp_cap_multiplier(strategy))
             mult_sl = float(get_tp_sl_multiplier(strategy))

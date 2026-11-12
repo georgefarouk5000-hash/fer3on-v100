@@ -233,9 +233,11 @@ MAX_OPEN_TRADES = 4
 MAX_OPEN_PER_STRATEGY = 1
 MAX_OPEN_SMC   = 1
 MAX_OPEN_DAILY = 1
+MAX_OPEN_TSM = 1
 PER_STRATEGY_MAX_OPEN_LIMITS = {
     'SMC': MAX_OPEN_SMC,
     'DAILY': MAX_OPEN_DAILY,
+    'TSM': MAX_OPEN_TSM,
 }
 MAX_OPEN_PER_SYMBOL_DIRECTION = 2
 MAX_SAME_DIRECTION_POSITIONS = MAX_OPEN_PER_SYMBOL_DIRECTION
@@ -252,6 +254,7 @@ MAX_CROSS_STRATEGY_HEDGES = MAX_OPEN_TRADES
 PER_STRATEGY_SOFT_POSITION_LIMITS = {
     'DAILY': 10,
     'SMC': 10,
+    'TSM': 10,
 }
 
 # Compatibility alias: legacy config consumers expect a RISK_CONFIG dict, but
@@ -278,6 +281,7 @@ RISK_CONFIG = {
 
 DAILY_MAGIC = 2001
 SMC_MAGIC   = 4001
+TSM_MAGIC = 9001
 # AUDIT FIX [RECOVERY_MAGIC/SURVIVAL_MAGIC]: RECOVERY and SURVIVAL had no
 # registered magic numbers even though core/recovery_engine.py,
 # core/survival_intelligence.py, core/meta_ai_orchestrator.py,
@@ -307,6 +311,7 @@ SURVIVAL_MAGIC = 7001
 # [EXPOSURE-3].
 BASE_RISK_DAILY = max(MIN_EFFECTIVE_RISK_PERCENT, RISK_PER_TRADE_PERCENT * 0.9)
 BASE_RISK_SMC   = max(MIN_EFFECTIVE_RISK_PERCENT, RISK_PER_TRADE_PERCENT * 1.0)
+BASE_RISK_TSM   = max(MIN_EFFECTIVE_RISK_PERCENT, RISK_PER_TRADE_PERCENT * 1.0)
 MIN_TP_DISTANCE_MULT = 2.0    # RR = 1:2 كحد أدنى (TP ضعف SL)
 MIN_RR_RATIO_V3 = 2.0         # حد أدنى صارم لـ RR في V3-FIXED
 
@@ -663,6 +668,7 @@ import os
 ALLOW_LIVE_TRADING = os.getenv('ALLOW_LIVE_TRADING', 'False').lower() in ('true', '1', 'yes')
 SHADOW_ONLY_RUNTIME = os.getenv('FER3ON_SHADOW_ONLY', 'False').lower() in ('true', '1', 'yes')
 DEMO_TRADING_ENABLED = os.getenv('FER3ON_DEMO_TRADING_ENABLED', 'False').lower() in ('true', '1', 'yes')
+TSM_RUNTIME_ENABLED = os.getenv('FER3ON_TSM_ENABLED', 'True').lower() in ('true', '1', 'yes')
 SHADOW_RUN_MAX_CYCLES = max(0, int(os.getenv('FER3ON_SHADOW_MAX_CYCLES', '0') or 0))
 
 # =============================================================================

@@ -16,6 +16,7 @@ from unittest.mock import MagicMock, patch
 
 import core.trade_executor as te
 from core.settings import MIN_SL_DISTANCE, MAX_SL_DISTANCE_DOLLARS
+from core.sl_tp_finalizer import finalize_sl_tp
 
 
 def test_enforce_min_stop_distance_lets_adaptive_value_through():
@@ -44,6 +45,42 @@ def test_enforce_min_stop_distance_caps_oversized_adaptive_value():
         result = te._enforce_min_stop_distance("XAUUSD", oversized, point=0.01)
 
     assert result == MAX_SL_DISTANCE_DOLLARS
+
+
+def test_finalizer_preserves_structural_stop_and_target_beyond_legacy_caps():
+    with patch.object(te, "MT5_AVAILABLE", False):
+        result = finalize_sl_tp(
+            symbol="XAUUSD",
+            sl_dist_raw=25.0,
+            tp_dist_raw=55.0,
+            point=0.01,
+            strategy="TSM",
+            atr=2.0,
+            structural_stop=True,
+            structural_target=True,
+        )
+
+    assert result["sl_dist"] == 25.0
+    assert abs(result["tp_dist"] - 55.0) < 1e-8
+    assert not result["tp_was_atr_capped"]
+
+
+def test_structural_stop_below_broker_minimum_is_rejected_not_moved():
+    with patch.object(te, "MT5_AVAILABLE", False):
+        with patch.object(te, "_required_min_stop_distance", return_value=3.0):
+            result = finalize_sl_tp(
+                symbol="XAUUSD",
+                sl_dist_raw=2.0,
+                tp_dist_raw=4.0,
+                point=0.01,
+                strategy="TSM",
+                structural_stop=True,
+                structural_target=True,
+            )
+
+    assert result["sl_dist"] == 2.0
+    assert not result["valid"]
+    assert result["stop_reason"] == "STRUCTURAL_STOP_BELOW_BROKER_MINIMUM"
 
 
 def test_enforce_min_stop_distance_floors_invalid_input():
@@ -92,3 +129,37 @@ def test_calculate_smart_lot_uses_points_not_raw_price_for_tick_value():
         f"raw_lot={raw_lot} looks off by ~100x -- points/price-unit "
         f"conversion may have regressed (see [SLTP-2])."
     )
+
+
+def test_structural_stop_sizing_uses_actual_uncapped_distance():
+    import core.risk_manager as rm
+
+    fake_sym_info = MagicMock()
+    fake_sym_info.trade_tick_value = 1.0
+    fake_sym_info.volume_step = 0.01
+    fake_sym_info.point = 0.01
+
+    with patch.object(rm, "mt5") as fake_mt5:
+        fake_mt5.symbol_info.return_value = fake_sym_info
+        with patch.object(
+            rm, "get_loss_limits_status",
+            return_value={
+                "daily_used": 0,
+                "daily_limit": 999,
+                "weekly_used": 0,
+                "weekly_limit": 999,
+            },
+        ):
+            with patch.object(rm, "cooldown_active", return_value=False):
+                _, structural_raw_lot, _ = rm.calculate_smart_lot(
+                    balance=1000.0,
+                    risk_percent=1.0,
+                    sl_dist=30.0,
+                    symbol="XAUUSD",
+                    quality_score=75,
+                    session="UNKNOWN",
+                    exec_grade="A",
+                    structural_stop=True,
+                )
+
+    assert 0.0030 <= structural_raw_lot <= 0.0035

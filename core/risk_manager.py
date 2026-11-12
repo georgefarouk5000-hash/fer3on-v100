@@ -397,6 +397,7 @@ def calculate_smart_lot(
     max_daily_loss=None,
     max_weekly_loss=None,
     size_mode=None,
+    structural_stop=False,
 ):
     if cooldown_active():
         return 0.0, 0.0, ['COOLDOWN_ACTIVE']
@@ -439,11 +440,12 @@ def calculate_smart_lot(
     # and would have produced a lot size ~100x too large once [SLTP-1]'s
     # other fix let the real adaptive sl_dist through instead of the old
     # (also buggy) flat-1500 override that accidentally masked this.
-    sl_price_dist = max(float(sl_dist), float(MIN_SL_DISTANCE) * point)
-    # FER3ON FINAL [SLTP-2]: cap the stop for this account size — see
-    # settings.py MAX_SL_DISTANCE_DOLLARS. Keeps the risk this function
-    # computes consistent with what trade_executor.py will actually send.
-    sl_price_dist = min(sl_price_dist, MAX_SL_DISTANCE_DOLLARS)
+    if structural_stop:
+        sl_price_dist = float(sl_dist)
+    else:
+        sl_price_dist = max(float(sl_dist), float(MIN_SL_DISTANCE) * point)
+        # FER3ON FINAL [SLTP-2]: cap conventional stops for this account size.
+        sl_price_dist = min(sl_price_dist, MAX_SL_DISTANCE_DOLLARS)
     sl_points = sl_price_dist / point if point > 0 else sl_price_dist
 
     raw_lot = (
