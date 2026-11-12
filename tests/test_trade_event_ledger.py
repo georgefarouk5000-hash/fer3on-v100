@@ -151,6 +151,25 @@ def test_candidate_records_are_idempotent_after_restart(tmp_path):
     assert rows == [record]
 
 
+def test_claim_candidate_record_is_single_owner_and_survives_restart(tmp_path):
+    event_file = tmp_path / "claimed-candidates.jsonl"
+    record = {"candidate_id": "candidate-claimed", "score": 50}
+    target = str(event_file.resolve())
+    trade_event_ledger._CLAIMED_CANDIDATE_LOGS.pop(target, None)
+
+    assert trade_event_ledger.claim_candidate_record(str(event_file), record)
+    assert not trade_event_ledger.claim_candidate_record(
+        str(event_file), {**record, "score": 99}
+    )
+    trade_event_ledger._CLAIMED_CANDIDATE_LOGS.pop(target, None)
+    assert not trade_event_ledger.claim_candidate_record(str(event_file), record)
+    rows = [
+        json.loads(line)
+        for line in event_file.read_text(encoding="utf-8").splitlines()
+    ]
+    assert rows == [record]
+
+
 def test_event_ledger_appends_correlated_jsonl_records(monkeypatch, tmp_path):
     event_file = tmp_path / "trade_events.jsonl"
     monkeypatch.setattr(trade_event_ledger, "TRADE_EVENTS_FILE", str(event_file))

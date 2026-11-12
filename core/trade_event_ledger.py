@@ -14,6 +14,7 @@ TRADE_EVENTS_FILE = "data/history/trade_events.jsonl"
 _EVENTS_LOCK = threading.Lock()
 _CANDIDATE_LOG_LOCK = threading.Lock()
 _KNOWN_CANDIDATE_LOGS: dict[str, set[str]] = {}
+_CLAIMED_CANDIDATE_LOGS: dict[str, set[str]] = {}
 
 
 def create_trade_correlation_id(
@@ -98,7 +99,11 @@ def create_candidate_id(
 
 
 def build_mt5_trade_comment(strategy: str, correlation_id: str) -> str:
-    strategy_code = "D" if str(strategy or "").upper() == "DAILY" else "S"
+    strategy_code = {
+        "DAILY": "D",
+        "SMC": "S",
+        "TSM": "T",
+    }.get(str(strategy or "").upper(), "S")
     return f"F3-{strategy_code}-{str(correlation_id)[:24]}"[:31]
 
 
@@ -270,4 +275,40 @@ def append_candidate_record(path: str, record: dict[str, Any]) -> bool:
             handle.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
         if candidate_id:
             _KNOWN_CANDIDATE_LOGS[target].add(candidate_id)
+    return True
+
+
+def claim_candidate_record(path: str, record: dict[str, Any]) -> bool:
+    """Persist a candidate once and return whether this call claimed it."""
+    candidate_id = str(record.get("candidate_id") or "")
+    if not candidate_id:
+        raise ValueError("candidate_id is required")
+    target = os.path.abspath(path)
+    parent = os.path.dirname(target)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
+    with _CANDIDATE_LOG_LOCK:
+        known = _CLAIMED_CANDIDATE_LOGS.get(target)
+        if known is None:
+            known = set()
+            if os.path.exists(target):
+                with open(target, "r", encoding="utf-8") as existing:
+                    for line_number, line in enumerate(existing, start=1):
+                        try:
+                            prior = json.loads(line)
+                        except (TypeError, ValueError) as exc:
+                            raise ValueError(
+                                f"Invalid candidate log JSON at {target}:{line_number}"
+                            ) from exc
+                        if isinstance(prior, dict) and prior.get("candidate_id"):
+                            known.add(str(prior["candidate_id"]))
+            _CLAIMED_CANDIDATE_LOGS[target] = known
+        if candidate_id in known:
+            return False
+        with open(target, "a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        if candidate_id:
+            known.add(candidate_id)
     return True

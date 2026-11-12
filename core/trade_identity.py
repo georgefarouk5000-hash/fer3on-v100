@@ -5,6 +5,7 @@ from typing import Dict, Optional
 from core.settings import (
     DAILY_MAGIC,
     SMC_MAGIC,
+    TSM_MAGIC,
     RECOVERY_MAGIC,
     SURVIVAL_MAGIC,
 )
@@ -13,6 +14,7 @@ from core.settings import (
 STRATEGY_TO_MAGIC = {
     "DAILY": int(DAILY_MAGIC),
     "SMC": int(SMC_MAGIC),
+    "TSM": int(TSM_MAGIC),
     # AUDIT FIX: registered so magic_from_strategy()/resolve_trade_identity()
     # resolve these correctly if any of the orphaned RECOVERY/SURVIVAL
     # modules is ever wired into a live entry path -- see core/settings.py's

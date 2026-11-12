@@ -66,6 +66,7 @@ from core.professional_swing_structure import (
 )
 from core.mt5_compat import MT5_AVAILABLE, connect_mt5, mt5
 from core.mt5_history_sync import sync_mt5_history
+from core.closed_rate_snapshot import closed_rates_asof
 from analytics.csv_truth_bridge import sync_csv_to_truth_layer
 from analytics.execution_quality import calculate_execution_quality_score, calculate_regime_fit_score
 from core.quality_score import evaluate_quality_gate
@@ -79,6 +80,7 @@ from core.session_intelligence import (
 )
 from core.settings import (
     CHECK_INTERVAL, DAILY_MAGIC, DAILY_RUNTIME_ENABLED, SMC_MAGIC, SYMBOL, TESTING_MODE_LOT_CAPS, MAX_DAILY_TRADES,
+    TSM_MAGIC, TSM_RUNTIME_ENABLED,
     BASE_ACCOUNT_BALANCE, MAX_LOT, TRADE_COOLDOWN, ASIA_TRADING_ENABLED,
     OFF_HOURS_MAX_TRADES,
     LONDON_VOLATILE_BLOCK_ENABLED, LONDON_VOLATILE_START, LONDON_VOLATILE_END,
@@ -230,6 +232,7 @@ def build_market_snapshot_hash(rates, atr, market_regime, session, confidence_pc
 _last_analysis_hash = None
 _last_analysis_time = 0.0
 _resolver_candles_cache = []
+_last_tsm_bar_time = None
 
 # =============================================================================
 # V3.5 PHASE-1 FIX: real per-strategy cooldown tracking.
@@ -576,6 +579,8 @@ def _build_order_request(
     atr: float = None,
     strategy: str = 'SMC',
     tick=None,
+    structural_stop: bool = False,
+    structural_target: bool = False,
 ):
     if tick is None:
         tick = mt5.symbol_info_tick(SYMBOL) if mt5 is not None else None
@@ -601,6 +606,8 @@ def _build_order_request(
         point=point,
         strategy=strategy,
         atr=atr,
+        structural_stop=structural_stop,
+        structural_target=structural_target,
     )
     sl_dist = final['sl_dist']
     tp_dist = final['tp_dist']
@@ -668,7 +675,11 @@ def _build_order_request(
         'sl': sl,
         'tp': tp,
         'deviation': 20,
-        'magic': DAILY_MAGIC if str(strategy).upper() == 'DAILY' else SMC_MAGIC,
+        'magic': (
+            DAILY_MAGIC if str(strategy).upper() == 'DAILY'
+            else TSM_MAGIC if str(strategy).upper() == 'TSM'
+            else SMC_MAGIC
+        ),
         'comment': f'F3-{str(strategy).upper()}',
         'type_time': mt5.ORDER_TIME_GTC,
         'type_filling': filling,
@@ -1225,6 +1236,521 @@ def _select_strategy_snapshot(
     return snapshot
 
 
+_last_tsm_runtime_status = None
+
+
+def _log_tsm_status(status: str, reason: str, *, bar_time=None, signal=None) -> None:
+    global _last_tsm_runtime_status
+    status_key = (status, reason, str(bar_time or ""), signal or "")
+    if status_key == _last_tsm_runtime_status:
+        return
+    _last_tsm_runtime_status = status_key
+    message = f"TSM | {status} | {reason}"
+    if bar_time:
+        message += f" | bar={bar_time}"
+    if signal:
+        message += f" | signal={signal}"
+    print(message)
+
+
+def _load_tsm_context_rates(symbol: str, decision_bar_time: int):
+    decision_time = decision_bar_time + 15 * 60
+    m5_source = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M5, 0, 120)
+    h1_source = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_H1, 0, 240)
+    d1_source = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_D1, 0, 120)
+    if m5_source is None or h1_source is None:
+        return None, "M5_OR_H1_CONTEXT_UNAVAILABLE"
+
+    m5_rates = closed_rates_asof(
+        m5_source,
+        timeframe_seconds=5 * 60,
+        decision_time=decision_time,
+    )
+    h1_rates = closed_rates_asof(
+        h1_source,
+        timeframe_seconds=60 * 60,
+        decision_time=decision_time,
+    )
+    d1_rates = (
+        closed_rates_asof(
+            d1_source,
+            timeframe_seconds=24 * 60 * 60,
+            decision_time=decision_time,
+        )
+        if d1_source is not None
+        else []
+    )
+    if len(m5_rates) < 4 or len(h1_rates) < 20:
+        return None, "M5_OR_H1_CLOSED_CONTEXT_INSUFFICIENT"
+    return (m5_rates, h1_rates, d1_rates), None
+
+
+def _run_tsm(symbol: str) -> None:
+    """Evaluate TSM once per closed M15 candle and route eligible signals."""
+    global _last_tsm_bar_time
+
+    if not TSM_RUNTIME_ENABLED:
+        _log_tsm_status("DISABLED", "RUNTIME_FLAG_FALSE")
+        return
+    if not MT5_AVAILABLE or mt5 is None:
+        _log_tsm_status("BLOCKED", "MT5_UNAVAILABLE")
+        return
+
+    m15_rates = mt5.copy_rates_from_pos(symbol, mt5.TIMEFRAME_M15, 1, 512)
+    if m15_rates is None or len(m15_rates) < 512:
+        _log_tsm_status("WAIT", "CLOSED_M15_RATES_UNAVAILABLE")
+        return
+    decision_bar_time = int(m15_rates[-1]["time"])
+    if decision_bar_time == _last_tsm_bar_time:
+        return
+
+    tick = mt5.symbol_info_tick(symbol)
+    if tick is None:
+        _log_tsm_status("WAIT", "TICK_UNAVAILABLE", bar_time=decision_bar_time)
+        return
+
+    context_rates, context_error = _load_tsm_context_rates(
+        symbol,
+        decision_bar_time,
+    )
+    if context_rates is None:
+        _log_tsm_status(
+            "WAIT",
+            context_error or "TSM_CONTEXT_UNAVAILABLE",
+            bar_time=decision_bar_time,
+        )
+        return
+    m5_rates, h1_rates, d1_rates = context_rates
+    _last_tsm_bar_time = decision_bar_time
+
+    from core.tsm_strategy import (
+        STRATEGY_ID,
+        STRATEGY_VERSION,
+        build_tsm_candidate,
+    )
+    from core.trade_event_ledger import (
+        append_trade_event,
+        claim_candidate_record,
+        create_candidate_id,
+        create_trade_correlation_id,
+    )
+
+    candidate, evaluation_reason = build_tsm_candidate(
+        m15_rates,
+        buy_entry=float(getattr(tick, "ask", 0.0) or 0.0),
+        sell_entry=float(getattr(tick, "bid", 0.0) or 0.0),
+        m5_rates=m5_rates,
+        h1_rates=h1_rates,
+        d1_rates=d1_rates,
+    )
+    bar_time_text = datetime.fromtimestamp(
+        decision_bar_time, timezone.utc
+    ).isoformat()
+    signal = candidate.signal if candidate else "NONE"
+    candidate_id = create_candidate_id(
+        symbol=symbol,
+        strategy=STRATEGY_ID,
+        signal=signal,
+        decision_bar_time=bar_time_text,
+    )
+    candidate_record = {
+        "candidate_id": candidate_id or f"{STRATEGY_ID}:{bar_time_text}",
+        "strategy": STRATEGY_ID,
+        "strategy_version": STRATEGY_VERSION,
+        "symbol": symbol,
+        "timeframe": "M15",
+        "decision_bar_time": bar_time_text,
+        "signal": signal,
+        "status": "SIGNAL" if candidate else "WAIT",
+        "reason": evaluation_reason,
+        "entry_reason": candidate.entry_reason if candidate else "",
+        "entry_conditions": candidate.entry_conditions if candidate else [],
+        "entry_evidence": candidate.evidence() if candidate else {},
+        "logged_at": datetime.now(timezone.utc).isoformat(),
+    }
+    _log_tsm_status(
+        "SIGNAL" if candidate else "WAIT",
+        evaluation_reason,
+        bar_time=bar_time_text,
+        signal=signal,
+    )
+    if not claim_candidate_record(
+        "data/analytics/tsm/candidates.jsonl",
+        candidate_record,
+    ):
+        return
+    if candidate is None:
+        return
+
+    append_trade_event(
+        "STRATEGY_CANDIDATE",
+        candidate_id,
+        strategy=STRATEGY_ID,
+        strategy_version=STRATEGY_VERSION,
+        symbol=symbol,
+        signal=candidate.signal,
+        decision_bar_time=candidate.decision_bar_time,
+        entry_reason=candidate.entry_reason,
+        entry_conditions=candidate.entry_conditions,
+        entry_evidence=candidate.evidence(),
+    )
+
+    def block(reason: str, **details) -> None:
+        _log_tsm_status(
+            "BLOCKED",
+            reason,
+            bar_time=bar_time_text,
+            signal=candidate.signal,
+        )
+        append_trade_event(
+            "STRATEGY_CANDIDATE_BLOCKED",
+            candidate_id,
+            strategy=STRATEGY_ID,
+            symbol=symbol,
+            signal=candidate.signal,
+            decision_bar_time=candidate.decision_bar_time,
+            reason=reason,
+            **details,
+        )
+
+    from core.demo_execution import demo_execution_status
+
+    trading_allowed, trading_reason = demo_execution_status()
+    if not trading_allowed:
+        block("DEMO_EXECUTION_BLOCKED", execution_reason=trading_reason)
+        return
+
+    spread = float(getattr(tick, "ask", 0.0)) - float(
+        getattr(tick, "bid", 0.0)
+    )
+    if spread < 0 or spread > 0.60:
+        block("SPREAD_LIMIT", spread=spread, max_spread=0.60)
+        return
+    if _cooldown_active_for(STRATEGY_ID):
+        block("STRATEGY_COOLDOWN")
+        return
+
+    positions = mt5.positions_get(symbol=symbol)
+    if positions is None:
+        block("POSITION_STATE_UNAVAILABLE")
+        return
+    same_strategy_positions = sum(
+        1 for position in positions
+        if int(getattr(position, "magic", 0) or 0) == TSM_MAGIC
+    )
+    position_limits = evaluate_position_limits(
+        strategy=STRATEGY_ID,
+        current_positions=same_strategy_positions,
+        total_positions=len(positions),
+    )
+    if not position_limits.get("allowed", False):
+        block(
+            str(position_limits.get("reason") or "POSITION_LIMIT"),
+            position_limits=position_limits,
+        )
+        return
+
+    same_direction_count = sum(
+        1 for position in positions
+        if (
+            candidate.signal == "BUY"
+            and getattr(position, "type", None) == mt5.POSITION_TYPE_BUY
+        ) or (
+            candidate.signal == "SELL"
+            and getattr(position, "type", None) == mt5.POSITION_TYPE_SELL
+        )
+    )
+    if same_direction_count >= MAX_SAME_DIRECTION_POSITIONS:
+        block("MAX_SAME_DIRECTION_POSITIONS", count=same_direction_count)
+        return
+
+    now = datetime.now(timezone.utc)
+    market_regime = detect_market_regime(symbol, rates_m15=m15_rates)
+    loss_pause = evaluate_loss_pause(
+        {
+            "symbol": symbol,
+            "strategy": STRATEGY_ID,
+            "signal": candidate.signal,
+            "decision_bar_time": candidate.decision_bar_time,
+        },
+        market_regime=market_regime,
+    )
+    if not loss_pause.get("trading_allowed", True):
+        block("LOSS_PAUSE_GUARD", loss_pause_reason=loss_pause.get("reason"))
+        return
+
+    balance = _live_account_balance()
+    if balance is None:
+        block("ACCOUNT_BALANCE_UNAVAILABLE")
+        return
+    sync_portfolio_equity(balance)
+    risk_decision = evaluate_risk(
+        strategy=STRATEGY_ID,
+        direction=candidate.signal,
+        requested_risk_percent=MIN_EFFECTIVE_RISK_PERCENT,
+        candidate_meta={
+            "symbol": symbol,
+            "rr_ratio": candidate.reward_risk,
+            "candidate_id": candidate_id,
+        },
+    )
+    if not risk_decision.approved:
+        block(
+            risk_decision.rejection_reason or "PORTFOLIO_RISK_REJECTED",
+            risk_notes=risk_decision.notes,
+        )
+        return
+    risk_percent = float(
+        risk_decision.final_risk_percent or MIN_EFFECTIVE_RISK_PERCENT
+    )
+
+    request = _build_order_request(
+        candidate.signal,
+        0.01,
+        candidate.risk_distance,
+        candidate.reward_distance,
+        atr=candidate.atr_at_decision,
+        strategy=STRATEGY_ID,
+        tick=tick,
+        structural_stop=True,
+        structural_target=True,
+    )
+    entry_price = float(request.get("price", 0) or 0)
+    stop_price = float(request.get("sl", 0) or 0)
+    target_price = float(request.get("tp", 0) or 0)
+    if entry_price <= 0 or stop_price <= 0 or target_price <= 0:
+        block("INVALID_FINALIZED_ORDER_GEOMETRY")
+        return
+    sl_dist = abs(entry_price - stop_price)
+    tp_dist = abs(target_price - entry_price)
+    final_rr = tp_dist / sl_dist if sl_dist > 0 else 0.0
+    if sl_dist <= 0 or final_rr < 1.20:
+        block(
+            "FINALIZED_RR_BELOW_MINIMUM",
+            sl_distance=sl_dist,
+            tp_distance=tp_dist,
+            rr_ratio=final_rr,
+        )
+        return
+
+    session = get_session(now.hour)
+    quality_score = 75
+    lot, raw_lot, adjustments = calculate_smart_lot(
+        balance=balance,
+        risk_percent=risk_percent,
+        sl_dist=sl_dist,
+        symbol=symbol,
+        quality_score=quality_score,
+        session=session,
+        recovery_mode=False,
+        exec_grade="B",
+        ai_score=50,
+        brain_score=50,
+        session_score=50,
+        aggression_mode="SMART",
+        strategy=STRATEGY_ID,
+        market_regime=market_regime,
+        size_mode="REDUCED",
+        structural_stop=True,
+    )
+    lot = min(float(lot), float(MAX_LOT))
+    if lot <= 0:
+        block(
+            "POSITION_SIZING_REJECTED",
+            raw_lot=raw_lot,
+            sizing_adjustments=adjustments,
+        )
+        return
+    request["volume"] = lot
+
+    decision_id = create_trade_correlation_id(
+        symbol=symbol,
+        strategy=STRATEGY_ID,
+        signal=candidate.signal,
+        decision_bar_time=candidate.decision_bar_time,
+        entry_price=entry_price,
+        stop_loss=stop_price,
+        take_profit=target_price,
+    )
+    entry_evidence = candidate.evidence()
+    entry_evidence.update({
+        "candidate_id": candidate_id,
+        "decision_id": decision_id,
+        "finalized_stop_price": stop_price,
+        "finalized_target_price": target_price,
+        "finalized_rr": final_rr,
+        "spread_at_decision": spread,
+        "market_regime": market_regime,
+        "risk_percent": risk_percent,
+        "lot": lot,
+    })
+    append_trade_event(
+        "DECISION",
+        decision_id,
+        candidate_id=candidate_id,
+        symbol=symbol,
+        strategy=STRATEGY_ID,
+        signal=candidate.signal,
+        decision_bar_time=candidate.decision_bar_time,
+        entry_price=entry_price,
+        stop_loss=stop_price,
+        take_profit=target_price,
+        risk_percent=risk_percent,
+        volume=lot,
+        entry_reason=candidate.entry_reason,
+        entry_conditions=candidate.entry_conditions,
+        entry_evidence=entry_evidence,
+    )
+    result = execute_trade(
+        request=request,
+        strategy=STRATEGY_ID,
+        signal=candidate.signal,
+        lot=lot,
+        sl_dist=sl_dist,
+        tp_dist=tp_dist,
+        rr_ratio=final_rr,
+        risk_percent=risk_percent,
+        exec_grade="B",
+        final_brain={"final_score": quality_score},
+        quality_score=quality_score,
+        confidence={"pct": quality_score},
+        market_regime=market_regime,
+        atr=candidate.atr_at_decision,
+        session=session,
+        magic=TSM_MAGIC,
+        size_mode="REDUCED",
+        decision_id=decision_id,
+        stop_diagnostics={
+            "selected_stop_source": "structure",
+            "selected_stop_anchor": {
+                "time": candidate.stop_anchor_time,
+                "price": candidate.stop_anchor_price,
+            },
+            "stop_selection_reason": candidate.stop_selection_reason,
+            "stop_timeframe": "M15",
+            "structure_buffer": abs(
+                candidate.stop_price - candidate.stop_anchor_price
+            ),
+            "selected_target_source": candidate.target_source,
+            "selected_target_level": candidate.target_level,
+            "next_structural_target": candidate.next_target_price,
+        },
+        entry_reason=candidate.entry_reason,
+        entry_conditions=candidate.entry_conditions,
+        entry_evidence=entry_evidence,
+    )
+    result_value = (
+        result.get("retcode") if isinstance(result, dict)
+        else getattr(result, "retcode", None)
+    )
+    append_trade_event(
+        "DECISION_EXECUTION_RESULT",
+        decision_id,
+        candidate_id=candidate_id,
+        strategy=STRATEGY_ID,
+        retcode=result_value,
+        comment=(
+            result.get("comment") if isinstance(result, dict)
+            else getattr(result, "comment", None)
+        ),
+        order_ticket=(
+            result.get("order") if isinstance(result, dict)
+            else getattr(result, "order", None)
+        ),
+        deal_ticket=(
+            result.get("deal") if isinstance(result, dict)
+            else getattr(result, "deal", None)
+        ),
+        fill_price=(
+            result.get("price") if isinstance(result, dict)
+            else getattr(result, "price", None)
+        ),
+        fill_volume=(
+            result.get("volume") if isinstance(result, dict)
+            else getattr(result, "volume", None)
+        ),
+    )
+    if result_value != getattr(mt5, "TRADE_RETCODE_DONE", None):
+        _log_tsm_status(
+            "NOT_FILLED",
+            f"EXECUTION_RETCODE_{result_value}",
+            bar_time=bar_time_text,
+            signal=candidate.signal,
+        )
+        return
+
+    if isinstance(result, dict):
+        order_ticket = result.get("order")
+        filled_lot = float(result.get("volume") or lot)
+        fill_price = float(result.get("price") or entry_price)
+    else:
+        order_ticket = getattr(result, "order", None)
+        filled_lot = get_filled_volume(result, lot)
+        fill_price = float(getattr(result, "price", 0) or entry_price)
+    order_ticket = int(order_ticket or 0)
+    if order_ticket <= 0:
+        append_trade_event(
+            "TRADE_OPEN_RECORD_FAILED",
+            decision_id,
+            candidate_id=candidate_id,
+            strategy=STRATEGY_ID,
+            reason="FILLED_ORDER_TICKET_MISSING",
+        )
+        _log_tsm_status(
+            "OPEN_RECORD_FAILED",
+            "FILLED_ORDER_TICKET_MISSING",
+            bar_time=bar_time_text,
+            signal=candidate.signal,
+        )
+        return
+
+    realized_risk = compute_realized_risk_percent(
+        lot=filled_lot,
+        entry_price=fill_price,
+        sl_price=stop_price,
+        balance=balance,
+        symbol=symbol,
+    )
+    record_trade_open(
+        ticket=order_ticket,
+        strategy=STRATEGY_ID,
+        direction=candidate.signal,
+        lot=filled_lot,
+        risk_percent=realized_risk,
+        entry_price=fill_price,
+        sl=stop_price,
+        tp=target_price,
+        symbol=symbol,
+        meta={
+            "candidate_id": candidate_id,
+            "decision_id": decision_id,
+            "strategy_version": STRATEGY_VERSION,
+            "entry_reason": candidate.entry_reason,
+            "entry_conditions": candidate.entry_conditions,
+            "entry_evidence": entry_evidence,
+        },
+    )
+    _register_trade_opened(STRATEGY_ID)
+    _log_tsm_status(
+        "OPENED",
+        "ORDER_FILLED",
+        bar_time=bar_time_text,
+        signal=candidate.signal,
+    )
+    append_trade_event(
+        "TRADE_OPENED",
+        decision_id,
+        candidate_id=candidate_id,
+        strategy=STRATEGY_ID,
+        ticket=order_ticket,
+        volume=filled_lot,
+        fill_price=fill_price,
+        realized_risk_percent=realized_risk,
+        entry_reason=candidate.entry_reason,
+        entry_conditions=candidate.entry_conditions,
+    )
+
+
 def main():
     print('=' * 60)
     print('   FER3ON-AI-V3-PLUS-PLUS-PLUS')
@@ -1364,6 +1890,14 @@ def main():
                 print(
                     f'Heartbeat {counter} | {now.strftime("%H:%M:%S")} UTC | '
                     f'MT5={_mt5_status} | bid={tick.bid:.2f} ask={tick.ask:.2f}'
+                )
+
+            try:
+                _run_tsm(SYMBOL)
+            except Exception as _tsm_error:
+                _log_tsm_status(
+                    "ERROR",
+                    f"{type(_tsm_error).__name__}: {_tsm_error}",
                 )
 
             snapshot = _build_live_snapshot(SYMBOL)

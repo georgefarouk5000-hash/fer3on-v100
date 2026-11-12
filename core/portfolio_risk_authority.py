@@ -43,6 +43,7 @@ from core.settings import (
     MAX_LOT,
     BASE_RISK_DAILY,
     BASE_RISK_SMC,
+    BASE_RISK_TSM,
     HARD_RISK_MAX_PER_TRADE,
     HARD_RISK_MAX_PER_TRADE_CEILING,
     MAX_DAILY_LOSS_USD,
@@ -179,6 +180,7 @@ def determine_base_risk_percent(strategy: str) -> float:
     return {
         "DAILY": BASE_RISK_DAILY,
         "SMC":   BASE_RISK_SMC,
+        "TSM":   BASE_RISK_TSM,
     }.get(s, RISK_PER_TRADE_PERCENT)
 
 

@@ -37,8 +37,10 @@ class RiskConsistencyTests(unittest.TestCase):
         self.assertEqual(core.settings.MAX_OPEN_SMC, 1)
         self.assertEqual(core.settings.MAX_OPEN_DAILY, 1)
         self.assertEqual(
-            set(core.settings.PER_STRATEGY_MAX_OPEN_LIMITS), {"SMC", "DAILY"}
+            set(core.settings.PER_STRATEGY_MAX_OPEN_LIMITS),
+            {"SMC", "DAILY", "TSM"},
         )
+        self.assertEqual(core.settings.MAX_OPEN_TSM, 1)
 
     def test_03_portfolio_authority_keys(self):
         self.assertTrue(core.settings.PORTFOLIO_RISK_AUTHORITY_ACTIVE)

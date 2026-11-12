@@ -107,9 +107,14 @@ def _register_live_trade():
     _live_trade_count += 1
 
 
-def _required_min_stop_distance(symbol: str, point: float = 0.01) -> float:
+def _required_min_stop_distance(
+    symbol: str,
+    point: float = 0.01,
+    *,
+    structural_stop: bool = False,
+) -> float:
     """Return the broker and application minimum in raw price units."""
-    floor = get_min_sl_dollars(point)
+    floor = 0.0 if structural_stop else get_min_sl_dollars(point)
     fallback = float(BROKER_STOP_LEVEL_FALLBACK) * point
     if MT5_AVAILABLE and mt5 is not None:
         try:
@@ -191,7 +196,14 @@ def _is_stops_too_close_rejection(response):
 # =========================================
 
 
-def _enforce_min_stop_distance(symbol: str, sl_dist: float, point: float = 0.01) -> float:
+def _enforce_min_stop_distance(
+    symbol: str,
+    sl_dist: float,
+    point: float = 0.01,
+    *,
+    structural_stop: bool = False,
+    preserve_structural_distance: bool = False,
+) -> float:
     """Apply only the final safety floor for broker stop-level constraints.
 
     The adaptive engine already computes the real SL distance from ATR and
@@ -220,17 +232,23 @@ def _enforce_min_stop_distance(symbol: str, sl_dist: float, point: float = 0.01)
     # written independently, which is exactly the kind of two-copies setup
     # that let [SLTP-1] happen in the first place. Both now call the one
     # function in core/settings.py.
-    floor = _required_min_stop_distance(symbol, point)
+    floor = _required_min_stop_distance(
+        symbol,
+        point,
+        structural_stop=structural_stop,
+    )
 
     if sl_dist is None or float(sl_dist or 0) <= 0:
         print(f'🛑 HIGH_FIX_6: Invalid SL distance sl_dist={sl_dist}, using floor={floor}')
         return floor
+    if preserve_structural_distance:
+        return float(sl_dist)
     enforced = max(float(sl_dist), floor)
     # FER3ON FINAL [SLTP-2]: cap the adaptive stop for this account size —
     # see settings.py MAX_SL_DISTANCE_DOLLARS for the full reasoning
     # (MIN_LOT granularity means an uncapped ATR spike would force an
     # oversized single-trade risk that no risk_percent setting can fix).
-    if enforced > MAX_SL_DISTANCE_DOLLARS:
+    if enforced > MAX_SL_DISTANCE_DOLLARS and not preserve_structural_distance:
         print(
             f'🛡 MAX_SL_CAPPED | adaptive/floor sl_dist={enforced:.2f} > '
             f'MAX_SL_DISTANCE_DOLLARS={MAX_SL_DISTANCE_DOLLARS} — capping'
@@ -365,6 +383,7 @@ def _send_order_with_stops_retry(
     sl_cap=None,
     decision_id=None,
     strategy=None,
+    preserve_structural_stop=False,
 ):
     """
     If the broker rejects the order because SL/TP are too close to price,
@@ -380,6 +399,8 @@ def _send_order_with_stops_retry(
     current_sl_dist = float(sl_dist)
     current_tp_dist = float(tp_dist)
     max_attempts = ORDER_RETRY_MAX_ATTEMPTS if ORDER_RETRY_ON_STOPS_REJECTION_ENABLED else 1
+    if preserve_structural_stop:
+        max_attempts = 1
 
     last_result = None
     last_check = None
@@ -1008,7 +1029,11 @@ def execute_trade(
     # core/sl_tp_finalizer.py for why this replaced three independent
     # re-derivations of the same numbers (builder-vs-executor drift was
     # exactly how the earlier SL/TP bugs happened). -----
-    from core.sl_tp_finalizer import finalize_sl_tp
+    from core.sl_tp_finalizer import (
+        finalize_sl_tp,
+        is_structural_stop,
+        is_structural_target,
+    )
 
     original_sl_dist = sl_dist
     original_tp_dist = tp_dist
@@ -1023,6 +1048,8 @@ def execute_trade(
             pass
 
     price = float(request.get('price', 0) or 0)
+    preserve_structural_stop = is_structural_stop(stop_diagnostics)
+    preserve_structural_target = is_structural_target(stop_diagnostics)
     final = finalize_sl_tp(
         symbol=symbol,
         sl_dist_raw=sl_dist,
@@ -1035,6 +1062,8 @@ def execute_trade(
         signal=signal,
         market_regime=market_regime,
         confidence=confidence,
+        structural_stop=preserve_structural_stop,
+        structural_target=preserve_structural_target,
     )
     if not final["valid"]:
         reason = final["stop_reason"] or "INVALID_SL_TP_CONSTRAINTS"
@@ -1091,6 +1120,7 @@ def execute_trade(
         sl_cap=final["sl_cap"],
         decision_id=decision_id,
         strategy=_strat_key,
+        preserve_structural_stop=preserve_structural_stop,
     )
 
     try:
